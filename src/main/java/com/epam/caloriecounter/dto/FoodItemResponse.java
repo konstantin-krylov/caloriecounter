@@ -1,7 +1,5 @@
 package com.epam.caloriecounter.dto;
 
-import com.epam.caloriecounter.entity.FoodNutrient;
-import com.epam.caloriecounter.entity.LabelNutrients;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
@@ -24,6 +22,6 @@ public class FoodItemResponse {
     private String servingSizeUnit;
     private String brandedFoodCategory;
     private LabelNutrients labelNutrients;
-    private List<FoodNutrient> foodNutrients;
+    private List<FoodNutrientResponse> foodNutrients;
 
 }

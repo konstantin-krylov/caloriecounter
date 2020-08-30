@@ -1,5 +1,19 @@
+#Connection parameters to the mysql database
+spring:
+  jpa:
+    database: POSTGRESQL
+    show-sql: false
+    hibernate:
+      ddl-auto: create
+  datasource:
+    url: jdbc:postgresql://localhost:6604/caloriecounter
+    username: postgres
+    password: postgres
+    driverClassName: org.postgresql.Driver
+
 usda:
   url: https://api.nal.usda.gov/fdc/v1
   getEndpoint: /food/{fdcId}
   searchEndpoint: /foods/search
   key: WAZwcUsahaRlolMdLeZ8hSkVUaWf69vH07felOpO
+

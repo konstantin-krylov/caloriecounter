@@ -1,4 +1,4 @@
-package com.epam.caloriecounter.entity;
+package com.epam.caloriecounter.dto;
 
 import lombok.Data;
 
