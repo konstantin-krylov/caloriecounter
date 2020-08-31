@@ -27,13 +27,13 @@ CREATE TABLE food_nutrient (
 
 CREATE TABLE nutrient_type (
     nutrient_type_id  BIGINT DEFAULT NEXTVAL('nutrient_type_nutrient_type_id_seq') PRIMARY KEY,
-    nutrient_name varchar(50)   NOT NULL,
+    nutrient_name varchar(50) UNIQUE  NOT NULL,
     unit_name varchar(10)   NOT NULL
 );
 
 CREATE TABLE food_type (
     food_type_id  BIGINT DEFAULT NEXTVAL('food_type_food_type_id_seq') PRIMARY KEY,
-    food_type varchar(255)   NOT NULL
+    food_type varchar(255)  UNIQUE NOT NULL
 );
 
 ALTER TABLE food ADD CONSTRAINT fk_food_food_type_id FOREIGN KEY(food_type_id)

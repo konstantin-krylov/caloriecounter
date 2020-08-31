@@ -26,8 +26,8 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 @RestClientTest(UsdaApiGateway.class)
 @AutoConfigureWebClient(registerRestTemplate = true)
 @TestPropertySource(properties = {
-        "usda.url=http://localhost:4567/fdc/v1",
-        "usda.key=testKey"
+        "usda.service.url=http://localhost:4567/fdc/v1",
+        "usda.service.key=testKey"
 })
 class FoodDataCentralServiceTest {
 
