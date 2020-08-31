@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.com/konstantin-krylov/caloriecounter.svg?branch=master)](https://travis-ci.com/konstantin-krylov/caloriecounter)
 # Pet Project For the Greater Good
 
 It is a simple project to create and keep a calorie diary.
