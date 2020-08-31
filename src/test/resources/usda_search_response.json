@@ -1,0 +1,32 @@
+{
+  "totalHits": 39587,
+  "currentPage": 1,
+  "totalPages": 198,
+  "foodSearchCriteria": {
+    "generalSearchInput": "Cheese",
+    "requireAllWords": false
+  },
+  "foods": [
+    {
+      "fdcId": 794445,
+      "dataType": "Branded",
+      "description": "CHEESE",
+      "brandOwner": "Sartori Company",
+      "ingredients": "BELLAVITANO CHEESE (PASTEURIZED MILK, CHEESE CULTURES, SALT, ENZYMES), BALSAMIC VINEGAR"
+    },
+    {
+      "fdcId": 401204,
+      "dataType": "Branded",
+      "description": "SARTORI CHEESE, PARMESAN CHEESE",
+      "brandOwner": "SARTORI CHEESE",
+      "ingredients": "PASTEURIZED MILK, CHEESE CULTURES, SALT, ENZYMES."
+    },
+    {
+      "fdcId": 364664,
+      "dataType": "Branded",
+      "description": "ROMANO CHEESE",
+      "brandOwner": "SARTORI",
+      "ingredients": "PASTEURIZED MILK, CHEESE CULTURES, SALT, ENZYMES."
+    }
+  ]
+}

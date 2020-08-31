@@ -1,0 +1,5 @@
+usda:
+  url: https://api.nal.usda.gov/fdc/v1
+  getEndpoint: /food/{fdcId}
+  searchEndpoint: /foods/search
+  key: WAZwcUsahaRlolMdLeZ8hSkVUaWf69vH07felOpO
