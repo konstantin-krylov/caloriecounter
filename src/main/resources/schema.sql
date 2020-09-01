@@ -28,6 +28,7 @@ CREATE TABLE food_nutrient (
 CREATE TABLE nutrient_type (
     nutrient_type_id  BIGINT DEFAULT NEXTVAL('nutrient_type_nutrient_type_id_seq') PRIMARY KEY,
     nutrient_name varchar(50) UNIQUE NOT NULL,
+    nutrient_number varchar(10) UNIQUE NOT NULL,
     unit_name varchar(10)   NOT NULL
 );
 

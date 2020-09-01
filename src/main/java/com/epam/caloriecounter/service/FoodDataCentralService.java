@@ -1,6 +1,8 @@
 package com.epam.caloriecounter.service;
 
+import com.epam.caloriecounter.dto.FoodDto;
 import com.epam.caloriecounter.dto.FoodItemResponse;
+import com.epam.caloriecounter.dto.FoodNutrientDto;
 import com.epam.caloriecounter.dto.FoodNutrientResponse;
 import com.epam.caloriecounter.dto.FoodSearchRequestDto;
 import com.epam.caloriecounter.dto.FoodSearchResultResponseDto;
@@ -23,6 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -44,14 +47,16 @@ public class FoodDataCentralService {
         return usdaApiGateway.search(request);
     }
 
-    //TODO remove redundant nutrient types
+    // TODO write tests!
     // TODO Code refactoring
-    public FoodItemResponse saveFood(String fdcId) {
+    // TODO remove redundant nutrient types
+    public FoodDto saveFood(String fdcId) {
         FoodItemResponse foodItemResponse = usdaApiGateway.getFood(fdcId, "full", Collections.emptyList());
 
-        HashSet<FoodNutrient> foodNutrients = new HashSet<>();
+        Food food = new Food()
+                .setFoodTitle(foodItemResponse.getDescription())
+                .setFoodIngredients(foodItemResponse.getIngredients());
 
-        Food food = foodMapper.toFoodEntity(foodItemResponse);
         FoodType foodType = foodTypeRepository.findByFoodType(foodItemResponse.getDataType());
         if (Objects.isNull(foodType)) {
             food.setFoodType(new FoodType()
@@ -60,47 +65,56 @@ public class FoodDataCentralService {
             food.setFoodType(foodType);
         }
 
+        HashSet<FoodNutrient> foodNutrients = new HashSet<>();
         for (FoodNutrientResponse response : foodItemResponse.getFoodNutrients()) {
 
             FoodNutrient foodNutrient = new FoodNutrient()
                     .setAmount(response.getAmount())
                     .setFood(food);
 
-            String nutrientName = response.getNutrient().getName();
-            NutrientType nutrientType = nutrientTypeRepository.findByNutrientName(nutrientName);
-
-            if (Objects.isNull(nutrientType)) {
-                foodNutrient.setNutrientType(new NutrientType()
-                        .setNutrientName(nutrientName)
-                        .setUnitName(response.getNutrient().getUnitName().toLowerCase()));
-            } else {
-                foodNutrient.setNutrientType(nutrientType);
+            String nutrientNumber = response.getNutrient().getNumber();
+            NutrientType nutrientType = nutrientTypeRepository.findByNutrientNumber(nutrientNumber);
+            if (isNutrientUseful(nutrientNumber)) {
+                if (Objects.isNull(nutrientType)) {
+                    foodNutrient.setNutrientType(new NutrientType()
+                            .setNutrientName(getNurientByNutrientNumber(nutrientNumber))
+                            .setNutrientNumber(response.getNutrient().getNumber())
+                            .setUnitName(response.getNutrient().getUnitName().toLowerCase()));
+                } else {
+                    foodNutrient.setNutrientType(nutrientType);
+                }
+                foodNutrients.add(foodNutrient);
             }
-
-
-            foodNutrients.add(foodNutrient);
         }
         food.setFoodNutrients(foodNutrients);
+        Food savedFood = foodRepository.save(food);
 
-        foodRepository.save(food);
-        return foodItemResponse;
+        return constructFoodDto(savedFood);
     }
 
-    private String mapNutrient(FoodNutrientResponse response, FoodItemResponse foodItemResponse) {
-        return nutrientTypeProperties.getNutrients().entrySet()
+    private boolean isNutrientUseful(String nutrientNumber) {
+        return nutrientTypeProperties.getNutrients()
+                .keySet()
                 .stream()
-                .filter(x -> x.getKey().equals(response.getNumber()))
-                .findFirst()
-                .map(Map.Entry::getValue)
-                .orElse(null);
+                .anyMatch(nutNum -> nutNum.equals(nutrientNumber));
     }
 
-    private String mapNutrientBrandedType(FoodNutrientResponse response, FoodItemResponse foodItemResponse) {
+    private String getNurientByNutrientNumber(String nutrientNumber) {
         return nutrientTypeProperties.getNutrients().entrySet()
                 .stream()
-                .filter(x -> x.getKey().equals(response.getNutrient().getNumber()))
+                .filter(x -> x.getKey().equals(nutrientNumber))
                 .findFirst()
                 .map(Map.Entry::getValue)
-                .orElse(null);
+                .orElseThrow();
+    }
+
+    private FoodDto constructFoodDto(Food savedFood) {
+        Set<FoodNutrientDto> foodNutrientDtos = new HashSet<>();
+        for (FoodNutrient nutrient : savedFood.getFoodNutrients()) {
+            FoodNutrientDto foodNutrientDto = foodMapper.toFoodNutrientDto(nutrient);
+            foodNutrientDtos.add(foodNutrientDto);
+        }
+        return foodMapper.toFoodDto(savedFood)
+                .setFoodNutrients(foodNutrientDtos);
     }
 }

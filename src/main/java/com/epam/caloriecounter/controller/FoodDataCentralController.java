@@ -1,5 +1,6 @@
 package com.epam.caloriecounter.controller;
 
+import com.epam.caloriecounter.dto.FoodDto;
 import com.epam.caloriecounter.dto.FoodItemResponse;
 import com.epam.caloriecounter.dto.FoodSearchRequestDto;
 import com.epam.caloriecounter.dto.FoodSearchResultResponseDto;
@@ -40,7 +41,7 @@ public class FoodDataCentralController {
     }
 
     @PostMapping(path = "get-and-save", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<FoodItemResponse> getFood(@RequestParam @ApiParam(example = "477320") String fdcId) {
+    public ResponseEntity<FoodDto> getFood(@RequestParam @ApiParam(example = "477320") String fdcId) {
         return ResponseEntity.ok(foodDataCentralService.saveFood(fdcId));
     }
 }

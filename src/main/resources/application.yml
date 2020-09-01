@@ -1,17 +1,16 @@
-#Connection parameters to the mysql database
+
 spring:
   jpa:
     database: POSTGRESQL
     show-sql: false
     hibernate:
-      # initialize db schema from schema.sql - none, from entities - create
-      ddl-auto: create
+      ddl-auto: update
   datasource:
     url: jdbc:postgresql://localhost:6604/caloriecounter
     username: postgres
     password: postgres
     driverClassName: org.postgresql.Driver
-    initialization-mode: always
+#    initialization-mode: always
 
 usda:
   service:
@@ -45,7 +44,7 @@ usda:
       320:    Vitamin A, RAE
       321:    Carotene, beta
       322:    Carotene, alpha
-      323:    Vitamin E (alpha-tocopherol)
+      323:    Vitamin E
       328:    Vitamin D (D2 + D3)
       334:    Cryptoxanthin, beta
       337:    Lycopene
@@ -58,7 +57,7 @@ usda:
       417:    Folate, total
       418:    Vitamin B-12
       421:    Choline, total
-      430:    Vitamin K (phylloquinone)
+      430:    Vitamin K
       431:    Folic acid
       432:    Folate, food
       435:    Folate, DFE

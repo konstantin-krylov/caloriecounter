@@ -26,6 +26,9 @@ public class NutrientType {
     @Column(name = "nutrient_name", unique = true)
     private String nutrientName;
 
+    @Column(name = "nutrient_number", unique = true)
+    private String nutrientNumber;
+
     @Column(name = "unit_name")
     private String unitName;
 
