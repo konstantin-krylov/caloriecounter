@@ -8,11 +8,17 @@ import lombok.Data;
 public class FoodNutrientResponse {
     private String id;
     private String type;
-    private Nutrient nutrient;
+    private Float amount;
 
+    /*
+    USDA API can return nutrient object...
+     */
+    private Nutrient nutrient;
+    /*
+    ...or fields
+     */
     private String number;
     private String name;
-    private Float amount;
     private String unitName;
 
     @Data
