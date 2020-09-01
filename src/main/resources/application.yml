@@ -4,8 +4,8 @@ spring:
     database: POSTGRESQL
     show-sql: false
     hibernate:
-      # initialize db schema from schema.sql
-      ddl-auto: none
+      # initialize db schema from schema.sql - none, from entities - create
+      ddl-auto: create
   datasource:
     url: jdbc:postgresql://localhost:6604/caloriecounter
     username: postgres

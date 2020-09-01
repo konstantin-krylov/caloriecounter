@@ -20,7 +20,7 @@ CREATE TABLE food (
 
 CREATE TABLE food_nutrient (
     nutrient_id  BIGINT DEFAULT NEXTVAL('food_nutrient_nutrient_id_seq') PRIMARY KEY,
-    amount float  DEFAULT 0 NOT NULL,
+    amount real DEFAULT 0 NOT NULL,
     food_id BIGINT   NOT NULL,
     nutrient_type_id BIGINT   NOT NULL
 );
