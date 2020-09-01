@@ -6,11 +6,14 @@ import com.epam.caloriecounter.dto.FoodSearchRequestDto;
 import com.epam.caloriecounter.dto.FoodSearchResultResponseDto;
 import com.epam.caloriecounter.entity.Food;
 import com.epam.caloriecounter.entity.FoodNutrient;
+import com.epam.caloriecounter.entity.FoodType;
 import com.epam.caloriecounter.entity.NutrientType;
 import com.epam.caloriecounter.gateway.UsdaApiGateway;
 import com.epam.caloriecounter.mapper.FoodMapper;
 import com.epam.caloriecounter.properties.NutrientTypeProperties;
 import com.epam.caloriecounter.repository.FoodRepository;
+import com.epam.caloriecounter.repository.FoodTypeRepository;
+import com.epam.caloriecounter.repository.NutrientTypeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -28,42 +32,66 @@ public class FoodDataCentralService {
     private final FoodRepository foodRepository;
     private final FoodMapper foodMapper;
     private final NutrientTypeProperties nutrientTypeProperties;
+    private final NutrientTypeRepository nutrientTypeRepository;
+    private final FoodTypeRepository foodTypeRepository;
 
     public FoodSearchResultResponseDto search(FoodSearchRequestDto request) {
         return usdaApiGateway.search(request);
     }
 
+    //TODO remove redundant nutrient types
+    //TODO fix not all saving nutrient type when format = abridged
+    //TODO add endpoint to save in db
+    // TODO Code refactoring
     public FoodItemResponse getFood(String fdcId, String format, List<Integer> nutrients) {
         FoodItemResponse foodItemResponse = usdaApiGateway.getFood(fdcId, format, nutrients);
 
         HashSet<FoodNutrient> foodNutrients = new HashSet<>();
-        FoodNutrient foodNutrient;
+
         Food food = foodMapper.toFoodEntity(foodItemResponse);
+        FoodType foodType = foodTypeRepository.findByFoodType(foodItemResponse.getDataType());
+        if (Objects.isNull(foodType)) {
+            food.setFoodType(new FoodType()
+                    .setFoodType(foodItemResponse.getDataType()));
+        } else {
+            food.setFoodType(foodType);
+        }
+
         for (FoodNutrientResponse response : foodItemResponse.getFoodNutrients()) {
 
-            if (foodItemResponse.getDataType().equals("Branded")) {
-                foodNutrient = new FoodNutrient()
-                        .setNutrientType(new NutrientType()
-                                .setNutrientName(mapNutrientBrandedType(response, foodItemResponse))
-                                .setUnitName(response.getNutrient().getUnitName()))
-                        .setAmount(response.getAmount())
-                        .setFood(food);
+            FoodNutrient foodNutrient = new FoodNutrient()
+                    .setAmount(response.getAmount())
+                    .setFood(food);
 
+            if (format.equals("full")) {
+                String nutrientName = response.getNutrient().getName();
+                NutrientType nutrientType = nutrientTypeRepository.findByNutrientName(nutrientName);
+
+                if (Objects.isNull(nutrientType)) {
+                    foodNutrient.setNutrientType(new NutrientType()
+                            .setNutrientName(nutrientName)
+                            .setUnitName(response.getNutrient().getUnitName().toLowerCase()));
+                } else {
+                    foodNutrient.setNutrientType(nutrientType);
+                }
             } else {
-                foodNutrient = new FoodNutrient()
-                        .setNutrientType(new NutrientType()
-                                .setNutrientName(mapNutrient(response, foodItemResponse))
-                                .setUnitName(response.getUnitName()))
-                        .setAmount(response.getAmount())
-                        .setFood(food);
+                String nutrientName = response.getName();
+                NutrientType nutrientType = nutrientTypeRepository.findByNutrientName(nutrientName);
 
+                if (Objects.isNull(nutrientType)) {
+                    foodNutrient.setNutrientType(new NutrientType()
+                            .setNutrientName(nutrientName)
+                            .setUnitName(response.getUnitName().toLowerCase()));
+                } else {
+                    foodNutrient.setNutrientType(nutrientType);
+                }
             }
 
             foodNutrients.add(foodNutrient);
         }
         food.setFoodNutrients(foodNutrients);
 
-        foodRepository.save(food);
+        Food save = foodRepository.save(food);
         return foodItemResponse;
     }
 

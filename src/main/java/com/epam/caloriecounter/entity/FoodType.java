@@ -23,6 +23,6 @@ public class FoodType {
     @JoinColumn(name = "food_type_id")
     private Long foodTypeId;
 
-    @Column(name = "food_type")
+    @Column(name = "food_type", unique = true)
     private String foodType;
 }

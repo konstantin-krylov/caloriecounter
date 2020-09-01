@@ -9,7 +9,6 @@ import org.mapstruct.Mapping;
 public interface FoodMapper {
 
     @Mapping(target = "foodTitle", source = "description")
-    @Mapping(target = "foodType.foodType", source = "dataType")
     @Mapping(target = "foodIngredients", source = "ingredients")
     Food toFoodEntity(FoodItemResponse foodItemResponse);
 

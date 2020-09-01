@@ -23,7 +23,7 @@ public class NutrientType {
     @JoinColumn(name = "nutrient_type_id")
     private Long nutrientTypeId;
 
-    @Column(name = "nutrient_name")
+    @Column(name = "nutrient_name", unique = true)
     private String nutrientName;
 
     @Column(name = "unit_name")

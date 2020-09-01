@@ -24,7 +24,7 @@ public class FoodNutrient {
 
     @Id
     @GeneratedValue(strategy = SEQUENCE, generator = "nutrient_seq_gen")
-    @SequenceGenerator(name = "nutrient_seq_gen", sequenceName = "nutrient_nutrient_id_seq", allocationSize = 1)
+    @SequenceGenerator(name = "nutrient_seq_gen", sequenceName = "food_nutrient_nutrient_id_seq", allocationSize = 1)
     @JoinColumn(name = "nutrient_id")
     private Long nutrientId;
 

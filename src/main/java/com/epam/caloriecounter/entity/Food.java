@@ -24,7 +24,7 @@ public class Food {
     @Column(name = "food_description")
     private String foodDescription;
 
-    @Column(name = "food_ingredients")
+    @Column(name = "food_ingredients", length = 2000)
     private String foodIngredients;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

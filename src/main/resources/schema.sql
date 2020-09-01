@@ -1,20 +1,20 @@
-DROP SEQUENCE IF EXISTS food_food_id_seq;
+DROP SEQUENCE IF EXISTS food_food_id_seq CASCADE;
 CREATE SEQUENCE food_food_id_seq;
 
-DROP SEQUENCE IF EXISTS food_nutrient_nutrient_id_seq;
+DROP SEQUENCE IF EXISTS food_nutrient_nutrient_id_seq CASCADE;
 CREATE SEQUENCE food_nutrient_nutrient_id_seq;
 
-DROP SEQUENCE IF EXISTS nutrient_type_nutrient_type_id_seq;
+DROP SEQUENCE IF EXISTS nutrient_type_nutrient_type_id_seq CASCADE;
 CREATE SEQUENCE nutrient_type_nutrient_type_id_seq;
 
-DROP SEQUENCE IF EXISTS food_type_food_type_id_seq;
+DROP SEQUENCE IF EXISTS food_type_food_type_id_seq CASCADE;
 CREATE SEQUENCE food_type_food_type_id_seq;
 
 CREATE TABLE food (
     food_id  BIGINT DEFAULT NEXTVAL('food_food_id_seq') PRIMARY KEY,
     food_title varchar(50)   NOT NULL,
-    food_description TEXT   NULL,
-    food_ingredients TEXT   NULL,
+    food_description varchar(500)   NULL,
+    food_ingredients varchar(2000)   NULL,
     food_type_id BIGINT   NOT NULL
 );
 
@@ -27,13 +27,13 @@ CREATE TABLE food_nutrient (
 
 CREATE TABLE nutrient_type (
     nutrient_type_id  BIGINT DEFAULT NEXTVAL('nutrient_type_nutrient_type_id_seq') PRIMARY KEY,
-    nutrient_name varchar(50) UNIQUE  NOT NULL,
+    nutrient_name varchar(50) UNIQUE NOT NULL,
     unit_name varchar(10)   NOT NULL
 );
 
 CREATE TABLE food_type (
     food_type_id  BIGINT DEFAULT NEXTVAL('food_type_food_type_id_seq') PRIMARY KEY,
-    food_type varchar(255)  UNIQUE NOT NULL
+    food_type varchar(50) UNIQUE NOT NULL
 );
 
 ALTER TABLE food ADD CONSTRAINT fk_food_food_type_id FOREIGN KEY(food_type_id)

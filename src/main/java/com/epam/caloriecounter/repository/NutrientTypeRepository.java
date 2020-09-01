@@ -7,4 +7,5 @@ import javax.transaction.Transactional;
 
 @Transactional
 public interface NutrientTypeRepository extends JpaRepository<NutrientType, Long> {
+    NutrientType findByNutrientName(String nutrientName);
 }
