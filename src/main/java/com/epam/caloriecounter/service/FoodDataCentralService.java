@@ -33,9 +33,10 @@ import java.util.Set;
 public class FoodDataCentralService {
 
     private final UsdaApiGateway usdaApiGateway;
-    private final FoodRepository foodRepository;
     private final FoodMapper foodMapper;
     private final NutrientTypeProperties nutrientTypeProperties;
+
+    private final FoodRepository foodRepository;
     private final NutrientTypeRepository nutrientTypeRepository;
     private final FoodTypeRepository foodTypeRepository;
 
@@ -47,7 +48,6 @@ public class FoodDataCentralService {
         return usdaApiGateway.search(request);
     }
 
-    // TODO write tests!
     // TODO Code refactoring
     // TODO remove redundant nutrient types
     public FoodDto saveFood(String fdcId) {

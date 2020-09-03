@@ -23,6 +23,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
+/**
+ * Testing how our application interacts with external system like USDA API
+ */
 @RestClientTest(UsdaApiGateway.class)
 @AutoConfigureWebClient(registerRestTemplate = true)
 @TestPropertySource(properties = {
