@@ -34,7 +34,7 @@ CREATE TABLE nutrient_type (
 
 CREATE TABLE food_type (
     food_type_id  BIGINT DEFAULT NEXTVAL('food_type_food_type_id_seq') PRIMARY KEY,
-    food_type varchar(50) UNIQUE NOT NULL
+    food_type_title varchar(50) UNIQUE NOT NULL
 );
 
 ALTER TABLE food ADD CONSTRAINT fk_food_food_type_id FOREIGN KEY(food_type_id)

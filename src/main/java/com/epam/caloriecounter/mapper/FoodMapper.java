@@ -10,7 +10,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface FoodMapper {
 
-    @Mapping(target = "foodType", source = "foodItemResponse.foodType.foodType")
+    @Mapping(target = "foodTypeTitle", source = "foodItemResponse.foodType.foodTypeTitle")
     FoodDto toFoodDto(Food foodItemResponse);
 
     @Mapping(target = "nutrientName", source = "nutrient.nutrientType.nutrientName")

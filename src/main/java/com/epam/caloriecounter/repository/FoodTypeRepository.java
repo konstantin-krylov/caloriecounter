@@ -7,5 +7,5 @@ import javax.transaction.Transactional;
 
 @Transactional
 public interface FoodTypeRepository extends JpaRepository<FoodType, Long> {
-    FoodType findByFoodType(String foodType);
+    FoodType findByFoodTypeTitle(String foodTypeTitle);
 }

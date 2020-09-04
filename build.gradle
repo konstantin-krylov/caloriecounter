@@ -2,6 +2,8 @@ plugins {
     id 'org.springframework.boot' version '2.3.0.RELEASE'
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
     id 'java'
+    id "org.sonarqube" version "2.6"
+    id 'jacoco'
 }
 
 group = 'com.epam'
@@ -68,4 +70,12 @@ dependencyManagement {
 
 test {
     useJUnitPlatform()
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectName", "caloriecounter"
+        property "sonar.projectKey", "com.epam:caloriecounter"
+        property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
+    }
 }

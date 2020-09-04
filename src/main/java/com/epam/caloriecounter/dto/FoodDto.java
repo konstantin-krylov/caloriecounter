@@ -13,7 +13,7 @@ public class FoodDto {
     private String foodTitle;
     private String foodDescription;
     private String foodIngredients;
-    private String foodType;
+    private String foodTypeTitle;
     private Set<FoodNutrientDto> foodNutrients;
 
 }

@@ -57,7 +57,7 @@ public class FoodRepositoryTestContainers {
         final Food food = new Food();
         food.setFoodId(1L);
         food.setFoodTitle("TestFoodTitle");
-        food.setFoodType(new FoodType().setFoodType("TestFoodType"));
+        food.setFoodType(new FoodType().setFoodTypeTitle("TestFoodType"));
         food.setFoodDescription("TestDescription");
         food.setFoodIngredients("Test, Test, Test");
         food.setFoodNutrients(Collections.singleton(new FoodNutrient()

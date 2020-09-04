@@ -43,7 +43,7 @@ class FoodDataCentralControllerTest {
                 .setFoodDescription("TestDescription")
                 .setFoodIngredients("TestIngridients")
                 .setFoodTitle("TestTitle")
-                .setFoodType("Branded")
+                .setFoodTypeTitle("Branded")
                 .setFoodNutrients(Collections.singleton(new FoodNutrientDto()
                         .setAmount(34f)
                         .setNutrientName("Protein").setUnitName("mg")

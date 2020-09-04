@@ -2,7 +2,7 @@
   "foodId": 1,
   "foodTitle": "RICE PILAF MIX",
   "foodIngredients": "PARBOILED LONG GRAIN RICE, ORZO (MACARONI PRODUCT MADE FROM WHEAT FLOUR), SALT, AUTOLYZED YEAST EXTRACT, ONIONS*, GARLIC*, TURMERIC SPICE WHICH IMPARTS COLOR.",
-  "foodType": "Branded",
+  "foodTypeTitle": "Branded",
   "foodDescription": null,
   "foodNutrients": [
     {

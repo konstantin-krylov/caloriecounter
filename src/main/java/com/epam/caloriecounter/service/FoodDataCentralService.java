@@ -57,10 +57,10 @@ public class FoodDataCentralService {
                 .setFoodTitle(foodItemResponse.getDescription())
                 .setFoodIngredients(foodItemResponse.getIngredients());
 
-        FoodType foodType = foodTypeRepository.findByFoodType(foodItemResponse.getDataType());
+        FoodType foodType = foodTypeRepository.findByFoodTypeTitle(foodItemResponse.getDataType());
         if (Objects.isNull(foodType)) {
             food.setFoodType(new FoodType()
-                    .setFoodType(foodItemResponse.getDataType()));
+                    .setFoodTypeTitle(foodItemResponse.getDataType()));
         } else {
             food.setFoodType(foodType);
         }
