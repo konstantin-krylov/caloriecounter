@@ -2,7 +2,7 @@ package com.epam.caloriecounter.controller;
 
 import com.epam.caloriecounter.dto.FoodDto;
 import com.epam.caloriecounter.dto.FoodNutrientDto;
-import com.epam.caloriecounter.service.FoodDataCentralService;
+import com.epam.caloriecounter.service.FoodService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -14,22 +14,24 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.util.Collections;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(FoodDataCentralController.class)
-class FoodDataCentralControllerTest {
+/**
+ * Test entToEnd.
+ */
+@WebMvcTest(FoodController.class)
+class FoodControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private FoodDataCentralService foodDataCentralService;
+    private FoodService foodService;
 
     @Test
     void check_contextStarts() {
@@ -37,7 +39,7 @@ class FoodDataCentralControllerTest {
     }
 
     @Test
-    void findOne_shouldReturnThePost() throws Exception {
+    void saveFood_shouldReturnFoodDto() throws Exception {
         final FoodDto foodDto = new FoodDto()
                 .setFoodId(364664L)
                 .setFoodDescription("TestDescription")
@@ -49,7 +51,7 @@ class FoodDataCentralControllerTest {
                         .setNutrientName("Protein").setUnitName("mg")
                 ));
 
-        given(foodDataCentralService.saveFood("364664")).willReturn(foodDto);
+        given(foodService.saveFood("364664")).willReturn(foodDto);
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://service-host/get-and-save")
                 .queryParam("fdcId", 364664);

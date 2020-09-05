@@ -4,10 +4,14 @@ import com.epam.caloriecounter.dto.FoodDto;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import org.json.JSONException;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.skyscreamer.jsonassert.Customization;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
+import org.skyscreamer.jsonassert.comparator.CustomComparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -41,7 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 })
 public class FoodServiceTestContainers {
     @Container
-    public static final PostgreSQLContainer DATABASE_CONTAINER = new PostgreSQLContainer();
+    public static final PostgreSQLContainer<?> DATABASE_CONTAINER = new PostgreSQLContainer<>();
 
     @DynamicPropertySource
     static void registerProperties(DynamicPropertyRegistry registry) {
@@ -53,17 +57,28 @@ public class FoodServiceTestContainers {
 
     protected final ObjectMapper objectMapper = new ObjectMapper();
 
-    private final WireMockServer wireMockServer = new WireMockServer(4567);
+    private WireMockServer wireMockServer;
+
+    @BeforeEach
+    void configureSystemUnderTest() {
+        this.wireMockServer = new WireMockServer(4567);
+        this.wireMockServer.start();
+    }
+
+    @AfterEach
+    void stopWireMockServer() {
+        this.wireMockServer.stop();
+    }
 
     private static final String USDA_API_GET_PATH = "/fdc/v1/food/%s?api_key=testKey&format=full&nutrients";
 
     @Autowired
-    private FoodDataCentralService foodDataCentralService;
+    private FoodService foodService;
 
     @Test
     public void check_contextStarts() {
         assertAll(
-                () -> assertThat(foodDataCentralService).isNotNull(),
+                () -> assertThat(foodService).isNotNull(),
                 () -> assertTrue(DATABASE_CONTAINER.isRunning())
         );
     }
@@ -71,7 +86,6 @@ public class FoodServiceTestContainers {
     @Test
     void saveFood_shouldGetFoodFromUsdaApiAndPersistNewFoodInDB() throws JsonProcessingException, JSONException {
 
-        wireMockServer.start();
         configureFor("localhost", 4567);
 
         stubFor(get(urlEqualTo(String.format(USDA_API_GET_PATH, 477320)))
@@ -79,16 +93,36 @@ public class FoodServiceTestContainers {
                         .withHeader("Content-Type", "application/json;charset=UTF-8")
                         .withBodyFile("usda_stub_get_response.json")));
 
-        FoodDto foodDto = foodDataCentralService.saveFood("477320");
+        FoodDto foodDto = foodService.saveFood("477320");
 
         String actualResponse = objectMapper.writeValueAsString(foodDto);
         String expectedResponse = readFileAsJsonString("classpath:food_dto_response.json");
 
-        JSONAssert.assertEquals(expectedResponse,
-                actualResponse,
-                JSONCompareMode.NON_EXTENSIBLE);
+        JSONAssert.assertEquals(expectedResponse, actualResponse,
+                new CustomComparator(JSONCompareMode.LENIENT,
+                        new Customization("foodId", (o1, o2) -> true)));
 
-        wireMockServer.stop();
+    }
+
+    @Test
+    void saveFood_shouldPersistNewFoodInDBWithoutUnusefulNutrients() throws JsonProcessingException, JSONException {
+
+        configureFor("localhost", 4567);
+
+        stubFor(get(urlEqualTo(String.format(USDA_API_GET_PATH, 477320)))
+                .willReturn(WireMock.ok()
+                        .withHeader("Content-Type", "application/json;charset=UTF-8")
+                        .withBodyFile("usda_stub_get_response_with_unusefull_nutrients.json")));
+
+        FoodDto foodDto = foodService.saveFood("477320");
+
+        String actualResponse = objectMapper.writeValueAsString(foodDto);
+        String expectedResponse = readFileAsJsonString("classpath:food_dto_response_without_unusefull_nutrients.json");
+
+        JSONAssert.assertEquals(expectedResponse, actualResponse,
+                new CustomComparator(JSONCompareMode.LENIENT,
+                        new Customization("foodId", (o1, o2) -> true)));
+
     }
 
 }

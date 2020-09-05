@@ -32,7 +32,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
         "usda.service.url=http://localhost:4567/fdc/v1",
         "usda.service.key=testKey"
 })
-class FoodDataCentralServiceTest {
+class FoodDataCentralUsdaApiGatewayTest {
 
     @Autowired
     private UsdaApiGateway usdaApiGateway;
