@@ -20,16 +20,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UsdaApiGateway {
 
-    @Value("${usda.url}")
+    @Value("${usda.service.url}")
     private String url;
 
-    @Value("${usda.getEndpoint}")
+    @Value("${usda.service.getEndpoint}")
     private String getEndpoint;
 
-    @Value("${usda.searchEndpoint}")
+    @Value("${usda.service.searchEndpoint}")
     private String searchEndpoint;
 
-    @Value("${usda.key}")
+    @Value("${usda.service.key}")
     private String apiKey;
 
     private final RestTemplate restTemplate;

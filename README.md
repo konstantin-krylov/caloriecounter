@@ -8,6 +8,12 @@ It is a **Spring Boot** project using *gradle*. So you may run it via cli:
     
     ./gradlew bootRun
 
+##### Start PostgreSQL Container (downloads image if not found)
+If you don't have **PostgreSQL** installed, you can run the database in a **Docker Container** via cli:
+```
+docker run -p 6604:5432 --env POSTGRES_DB=caloriecounter --name cc-postgres postgres:9.5.10 
+```
+
 ## Why should I run pet projects?
 1. It is **fun**.
 1. It helps to **learn** and **practice**.

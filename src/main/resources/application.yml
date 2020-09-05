@@ -1,5 +1,66 @@
+
+spring:
+  jpa:
+    database: POSTGRESQL
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:postgresql://localhost:6604/caloriecounter
+    username: postgres
+    password: postgres
+    driverClassName: org.postgresql.Driver
+#    initialization-mode: always
+
 usda:
-  url: https://api.nal.usda.gov/fdc/v1
-  getEndpoint: /food/{fdcId}
-  searchEndpoint: /foods/search
-  key: WAZwcUsahaRlolMdLeZ8hSkVUaWf69vH07felOpO
+  service:
+    url: https://api.nal.usda.gov/fdc/v1
+    getEndpoint: /food/{fdcId}
+    searchEndpoint: /foods/search
+    key: WAZwcUsahaRlolMdLeZ8hSkVUaWf69vH07felOpO
+  properties:
+    nutrients:
+      203:    Protein
+      204:    Total Fat
+      205:    Carbohydrate
+      208:    Energy
+      221:    Alcohol
+      255:    Water
+      262:    Caffeine
+      263:    Theobromine
+      269:    Sugars, total
+      291:    Fiber, total dietary
+      301:    Calcium
+      303:    Iron
+      304:    Magnesium
+      305:    Phosphorus
+      306:    Potassium
+      307:    Sodium
+      309:    Zinc
+      312:    Copper
+      317:    Selenium
+      318:    Vitamin A, IU
+      319:    Retinol
+      320:    Vitamin A, RAE
+      321:    Carotene, beta
+      322:    Carotene, alpha
+      323:    Vitamin E
+      328:    Vitamin D (D2 + D3)
+      334:    Cryptoxanthin, beta
+      337:    Lycopene
+      338:    Lutein + zeaxanthin
+      401:    Vitamin C
+      404:    Thiamin
+      405:    Riboflavin
+      406:    Niacin
+      415:    Vitamin B-6
+      417:    Folate, total
+      418:    Vitamin B-12
+      421:    Choline, total
+      430:    Vitamin K
+      431:    Folic acid
+      432:    Folate, food
+      435:    Folate, DFE
+      573:    Vitamin E, added
+      578:    Vitamin B-12, added
+      601:    Cholesterol

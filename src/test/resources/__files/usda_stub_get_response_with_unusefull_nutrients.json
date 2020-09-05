@@ -1,0 +1,52 @@
+{
+  "fdcId": 477321,
+  "brandOwner": "AHOLD",
+  "dataSource": "LI",
+  "dataType": "TestType",
+  "description": "RICE PILAF MIX",
+  "foodClass": "Branded",
+  "gtinUpc": "072251020212",
+  "householdServingFullText": "2 ONZ",
+  "ingredients": "PARBOILED LONG GRAIN RICE, ORZO (MACARONI PRODUCT MADE FROM WHEAT FLOUR), SALT, AUTOLYZED YEAST EXTRACT, ONIONS*, GARLIC*, TURMERIC SPICE WHICH IMPARTS COLOR.",
+  "servingSize": 56,
+  "servingSizeUnit": "g",
+  "brandedFoodCategory": "Flavored Rice Dishes",
+  "foodNutrients": [
+    {
+      "id": "5462010",
+      "type": "FoodNutrient",
+      "nutrient": {
+        "id": 1008,
+        "number": "605",
+        "name": "Fatty acids, total polyunsaturated",
+        "rank": 300,
+        "unitName": "mg"
+      },
+      "amount": 56.0
+    },
+    {
+      "id": "5462010",
+      "type": "FoodNutrient",
+      "nutrient": {
+        "id": 1008,
+        "number": "111666111",
+        "name": "Somethoin unuseful nutrient",
+        "rank": 300,
+        "unitName": "mg"
+      },
+      "amount": 56.0
+    },
+    {
+      "id": "5462010",
+      "type": "FoodNutrient",
+      "nutrient": {
+        "id": 1008,
+        "number": "wrong food nutrient!",
+        "name": "Somethoin unuseful wrong nutrient",
+        "rank": 300,
+        "unitName": "mg"
+      },
+      "amount": 56.0
+    }
+  ]
+}

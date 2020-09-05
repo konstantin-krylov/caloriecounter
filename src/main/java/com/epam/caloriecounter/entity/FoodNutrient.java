@@ -1,28 +1,43 @@
 package com.epam.caloriecounter.entity;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
+import static javax.persistence.GenerationType.SEQUENCE;
 
 @Data
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@Entity
+@Table(name = "food_nutrient")
+@EqualsAndHashCode(exclude={"food"})
 public class FoodNutrient {
-    private String id;
-    private String type;
-    private Nutrient nutrient;
 
-    private String number;
-    private String name;
+    @Id
+    @GeneratedValue(strategy = SEQUENCE, generator = "nutrient_seq_gen")
+    @SequenceGenerator(name = "nutrient_seq_gen", sequenceName = "food_nutrient_nutrient_id_seq", allocationSize = 1)
+    @JoinColumn(name = "nutrient_id")
+    private Long nutrientId;
+
+    @Column(name = "amount")
     private Float amount;
-    private String unitName;
 
-    @Data
-    public static class Nutrient {
+    @ToString.Exclude
+    @ManyToOne
+    @JoinColumn(name = "food_id")
+    private Food food;
 
-        private Integer id;
-        private String number;
-        private String name;
-        private Integer rank;
-        private String unitName;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "nutrient_type_id")
+    private NutrientType nutrientType;
 
-    }
 }
