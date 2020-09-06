@@ -5,6 +5,16 @@ os: linux
 dist: trusty
 jdk: oraclejdk11
 
-script:
+before_script:
   - chmod +x gradlew
+
+script:
   - ./gradlew clean check
+  - ./gradlew jacocoTestReport
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+
+env:
+  global:
+    - CODECOV_TOKEN="822f69c1-ef26-441c-8f2c-5e08ead2524e"
