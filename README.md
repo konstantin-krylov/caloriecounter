@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.com/konstantin-krylov/caloriecounter.svg?branch=master)](https://travis-ci.com/konstantin-krylov/caloriecounter)
 [![codecov](https://codecov.io/gh/konstantin-krylov/caloriecounter/branch/master/graph/badge.svg)](https://codecov.io/gh/konstantin-krylov/caloriecounter)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=com.epam%3Acaloriecounter&metric=coverage)](https://sonarcloud.io/dashboard?id=com.epam%3Acaloriecounter)
 # Pet Project For the Greater Good
 
 It is a simple project to create and keep a calorie diary.

@@ -11,6 +11,7 @@ before_script:
 script:
   - ./gradlew clean check
   - ./gradlew jacocoTestReport
+  - ./gradlew sonarqube -Dsonar.organization=konstantin-krylov -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=da994964daf1d6f93cba8cd4fff7c0a539d2a9f7
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
