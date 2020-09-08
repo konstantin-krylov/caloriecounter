@@ -37,6 +37,7 @@ dependencies {
     compile 'io.springfox:springfox-swagger-ui:2.9.2'
     compile 'javax.validation:validation-api:2.0.1.Final'
 
+    compile('org.flywaydb:flyway-core')
     runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
