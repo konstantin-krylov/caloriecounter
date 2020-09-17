@@ -34,7 +34,7 @@ public class FoodDataCentralController {
     @GetMapping(path = "get/{fdcId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<FoodItemResponse> getFood(@PathVariable @ApiParam(example = "477320") String fdcId,
                                                     @RequestParam(required = false)
-                                                    @ApiParam(allowableValues = "abridged,full", defaultValue = "abridged") String format,
+                                                    @ApiParam(allowableValues = "abridged,full", defaultValue = "full") String format,
                                                     @RequestParam(required = false) List<Integer> nutrients) {
         return ResponseEntity.ok(usdaApiGateway.getFood(fdcId, format, nutrients));
     }
