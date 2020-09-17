@@ -27,7 +27,7 @@ public class SystemService {
         List<Long> allFdcIds = foodRepository.getAllIds();
 
         while (count != request.getNumberOfRecords()) {
-            Long randomNum = (long) randomValueGenerator.generate();
+            Long randomNum = randomValueGenerator.generate();
             try {
                 if (!allFdcIds.contains(randomNum)) {
                     foodService.saveFood(String.valueOf(randomNum));

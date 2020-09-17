@@ -50,7 +50,7 @@ import static org.mockito.Mockito.when;
         "usda.service.url=http://localhost:4567/fdc/v1",
         "usda.service.key=testKey"
 })
-public class SystemServiceTestContainers {
+class SystemServiceTestContainers {
     @Container
     public static final PostgreSQLContainer<?> DATABASE_CONTAINER = new PostgreSQLContainer<>();
 
@@ -89,7 +89,7 @@ public class SystemServiceTestContainers {
     private RandomValueGenerator randomValueGenerator;
 
     @Test
-    public void check_contextStarts() {
+    void check_contextStarts() {
         assertAll(
                 () -> assertThat(systemService).isNotNull(),
                 () -> assertTrue(DATABASE_CONTAINER.isRunning())
@@ -113,9 +113,9 @@ public class SystemServiceTestContainers {
                         .withBodyFile("usda_stub_get_response_459590.json")));
 
         when(randomValueGenerator.generate())
-                .thenReturn(477320)
-                .thenReturn(477320)
-                .thenReturn(459590);
+                .thenReturn(477320L)
+                .thenReturn(477320L)
+                .thenReturn(459590L);
         String expectedResponse = readFileAsJsonString("classpath:fill_db_response.json");
 
         FillDatabaseResponse fill = systemService.fill(request);

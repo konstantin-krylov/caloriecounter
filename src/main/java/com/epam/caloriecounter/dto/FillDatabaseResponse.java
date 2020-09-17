@@ -1,8 +1,12 @@
 package com.epam.caloriecounter.dto;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+
+@Setter
+@Getter
 public class FillDatabaseResponse {
     private Integer recordsAdded;
     private Long requestDuration;

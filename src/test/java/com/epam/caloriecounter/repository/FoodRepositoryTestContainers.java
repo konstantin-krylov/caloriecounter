@@ -28,9 +28,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Testcontainers
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class FoodRepositoryTestContainers {
+class FoodRepositoryTestContainers {
     @Container
-    public static final PostgreSQLContainer DATABASE_CONTAINER = new PostgreSQLContainer();
+    public static final PostgreSQLContainer<?> DATABASE_CONTAINER = new PostgreSQLContainer<>();
 
     @DynamicPropertySource
     static void registerProperties(DynamicPropertyRegistry registry) {
@@ -44,7 +44,7 @@ public class FoodRepositoryTestContainers {
     private FoodRepository foodRepository;
 
     @Test
-    public void check_contextStarts() {
+    void check_contextStarts() {
         assertAll(
                 () -> assertThat(foodRepository).isNotNull(),
                 () -> assertTrue(DATABASE_CONTAINER.isRunning())

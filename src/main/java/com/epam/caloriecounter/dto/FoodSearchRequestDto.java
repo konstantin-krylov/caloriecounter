@@ -3,12 +3,16 @@ package com.epam.caloriecounter.dto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
-@Data
+
+@Setter
+@Getter
 @ApiModel
 public class FoodSearchRequestDto {
 

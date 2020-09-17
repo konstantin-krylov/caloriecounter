@@ -43,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
         "usda.service.url=http://localhost:4567/fdc/v1",
         "usda.service.key=testKey"
 })
-public class FoodServiceTestContainers {
+class FoodServiceTestContainers {
     @Container
     public static final PostgreSQLContainer<?> DATABASE_CONTAINER = new PostgreSQLContainer<>();
 
@@ -76,7 +76,7 @@ public class FoodServiceTestContainers {
     private FoodService foodService;
 
     @Test
-    public void check_contextStarts() {
+    void check_contextStarts() {
         assertAll(
                 () -> assertThat(foodService).isNotNull(),
                 () -> assertTrue(DATABASE_CONTAINER.isRunning())
