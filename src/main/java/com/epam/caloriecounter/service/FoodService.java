@@ -8,6 +8,7 @@ import com.epam.caloriecounter.entity.Food;
 import com.epam.caloriecounter.entity.FoodNutrient;
 import com.epam.caloriecounter.entity.FoodType;
 import com.epam.caloriecounter.entity.NutrientType;
+import com.epam.caloriecounter.exception.FoodAlreadyExistException;
 import com.epam.caloriecounter.gateway.UsdaApiGateway;
 import com.epam.caloriecounter.mapper.FoodMapper;
 import com.epam.caloriecounter.properties.NutrientTypeProperties;
@@ -40,16 +41,33 @@ public class FoodService {
 
     public FoodDto saveFood(String fdcId) {
         FoodItemResponse foodItemResponse = usdaApiGateway.getFood(fdcId, FOOD_DATA_FORMAT, Collections.emptyList());
+        checkOnFoodDublicate(foodItemResponse.getFdcId());
 
         Food food = new Food();
         food.setFoodTitle(foodItemResponse.getDescription());
+        food.setFdcId(foodItemResponse.getFdcId());
         food.setFoodIngredients(foodItemResponse.getIngredients());
-        food.setFoodType(checkOnExistingAndReturnFoodType(foodItemResponse.getDataType()));
+        food.setFoodType(checkOnExistingFoodType(foodItemResponse.getDataType()));
         food.setFoodNutrients(getFoodNutrients(foodItemResponse, food));
 
         Food savedFood = foodRepository.save(food);
 
         return constructFoodDto(savedFood);
+    }
+
+    private void checkOnFoodDublicate(Long fdcId) {
+        if (!Objects.isNull(foodRepository.findByFdcId(fdcId))) {
+            throw new FoodAlreadyExistException(fdcId);
+        }
+    }
+
+    private FoodType checkOnExistingFoodType(String dataType) {
+        FoodType foodType = foodTypeRepository.findByFoodTypeTitle(dataType);
+        if (Objects.isNull(foodType)) {
+            return new FoodType()
+                    .setFoodTypeTitle(dataType);
+        }
+        return foodType;
     }
 
     private HashSet<FoodNutrient> getFoodNutrients(FoodItemResponse foodItemResponse, Food food) {
@@ -63,14 +81,21 @@ public class FoodService {
             FoodNutrient foodNutrient = new FoodNutrient()
                     .setAmount(response.getAmount())
                     .setFood(food)
-                    .setNutrientType(checkOnExistingAndReturnNutrientType(response));
+                    .setNutrientType(checkOnExistingNutrientType(response));
 
             foodNutrients.add(foodNutrient);
         }
         return foodNutrients;
     }
 
-    private NutrientType checkOnExistingAndReturnNutrientType(FoodNutrientResponse response) {
+    private boolean isNutrientUseful(String nutrientNumber) {
+        return nutrientTypeProperties.getNutrients()
+                .keySet()
+                .stream()
+                .anyMatch(nutNum -> nutNum.equals(nutrientNumber));
+    }
+
+    private NutrientType checkOnExistingNutrientType(FoodNutrientResponse response) {
         String nutrientNumber = response.getNutrient().getNumber();
         NutrientType nutrientType = nutrientTypeRepository.findByNutrientNumber(nutrientNumber);
 
@@ -82,22 +107,6 @@ public class FoodService {
         } else {
             return nutrientType;
         }
-    }
-
-    private FoodType checkOnExistingAndReturnFoodType(String dataType) {
-        FoodType foodType = foodTypeRepository.findByFoodTypeTitle(dataType);
-        if (Objects.isNull(foodType)) {
-            return new FoodType()
-                    .setFoodTypeTitle(dataType);
-        }
-        return foodType;
-    }
-
-    private boolean isNutrientUseful(String nutrientNumber) {
-        return nutrientTypeProperties.getNutrients()
-                .keySet()
-                .stream()
-                .anyMatch(nutNum -> nutNum.equals(nutrientNumber));
     }
 
     private String getNurientByNutrientNumber(String nutrientNumber) {

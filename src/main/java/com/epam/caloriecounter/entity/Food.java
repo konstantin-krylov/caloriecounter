@@ -21,6 +21,9 @@ public class Food {
     @Column(name = "food_title")
     private String foodTitle;
 
+    @Column(name = "fdc_id")
+    private Long fdcId;
+
     @Column(name = "food_description")
     private String foodDescription;
 
