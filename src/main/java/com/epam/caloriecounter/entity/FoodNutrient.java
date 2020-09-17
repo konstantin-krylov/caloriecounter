@@ -2,6 +2,8 @@ package com.epam.caloriecounter.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.CascadeType;
@@ -16,7 +18,9 @@ import javax.persistence.Table;
 
 import static javax.persistence.GenerationType.SEQUENCE;
 
-@Data
+
+@Setter
+@Getter
 @Entity
 @Table(name = "food_nutrient")
 @EqualsAndHashCode(exclude={"food"})

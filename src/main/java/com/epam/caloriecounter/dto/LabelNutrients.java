@@ -1,8 +1,12 @@
 package com.epam.caloriecounter.dto;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+
+@Setter
+@Getter
 public class LabelNutrients {
     private Fat fat;
     private SaturatedFat saturatedFat;
@@ -18,67 +22,93 @@ public class LabelNutrients {
     private Postassium postassium;
     private Calories calories;
 
-    @Data
+
+    @Setter
+    @Getter
     public static class Fat {
         private Float value;
     }
 
-    @Data
+
+    @Setter
+    @Getter
     public static class SaturatedFat {
         private Float value;
     }
 
-    @Data
+
+    @Setter
+    @Getter
     public static class TransFat {
         private Float value;
     }
 
-    @Data
+
+    @Setter
+    @Getter
     public static class Cholesterol {
         private Float value;
     }
 
-    @Data
+
+    @Setter
+    @Getter
     public static class Sodium {
         private Float value;
     }
 
-    @Data
+
+    @Setter
+    @Getter
     private static class Carbohydrates {
         private Float value;
     }
 
-    @Data
+
+    @Setter
+    @Getter
     private static class Fiber {
         private Float value;
     }
 
-    @Data
+
+    @Setter
+    @Getter
     private static class Sugars {
         private Float value;
     }
 
-    @Data
+
+    @Setter
+    @Getter
     private static class Protein {
         private Float value;
     }
 
-    @Data
+
+    @Setter
+    @Getter
     private static class Calcium {
         private Float value;
     }
 
-    @Data
+
+    @Setter
+    @Getter
     private static class Iron {
         private Float value;
     }
 
-    @Data
+
+    @Setter
+    @Getter
     private static class Postassium {
         private Float value;
     }
 
-    @Data
+
+    @Setter
+    @Getter
     private static class Calories {
         private Float value;
     }

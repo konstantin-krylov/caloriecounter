@@ -3,10 +3,14 @@ package com.epam.caloriecounter.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
-@Data
+
+@Setter
+@Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FoodSearchResultResponseDto {
 
@@ -19,7 +23,9 @@ public class FoodSearchResultResponseDto {
     @JsonProperty("foods")
     private List<SearchResultFood> searchResultFoods;
 
-    @Data
+
+    @Setter
+    @Getter
     public static class SearchResultFood {
         private Long fdcId;
         private String dataType;
@@ -28,7 +34,9 @@ public class FoodSearchResultResponseDto {
         private String ingredients;
     }
 
-    @Data
+
+    @Setter
+    @Getter
     public static class FoodSearchCriteria {
         private String generalSearchInput;
         private Boolean requireAllWords;

@@ -2,8 +2,12 @@ package com.epam.caloriecounter.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+
+@Setter
+@Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FoodNutrientResponse {
     private String id;
@@ -21,7 +25,9 @@ public class FoodNutrientResponse {
     private String name;
     private String unitName;
 
-    @Data
+
+    @Setter
+    @Getter
     public static class Nutrient {
 
         private Integer id;

@@ -1,13 +1,17 @@
 package com.epam.caloriecounter.entity;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Set;
 
 import static javax.persistence.GenerationType.SEQUENCE;
 
-@Data
+
+@Setter
+@Getter
 @Entity
 @Table(name = "food")
 public class Food {
