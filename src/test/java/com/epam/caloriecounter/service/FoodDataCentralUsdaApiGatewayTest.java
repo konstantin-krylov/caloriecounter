@@ -47,7 +47,7 @@ class FoodDataCentralUsdaApiGatewayTest {
     private Resource usdaSearchResponse;
 
     @Test
-    public void check_contextStarts() {
+    void check_contextStarts() {
         assertAll(
                 () -> assertNotNull(usdaApiGateway),
                 () -> assertNotNull(restServer)
@@ -55,7 +55,7 @@ class FoodDataCentralUsdaApiGatewayTest {
     }
 
     @Test
-    public void get_withMockRestServer() {
+    void get_withMockRestServer() {
         restServer.expect(requestTo("http://localhost:4567/fdc/v1/food/170844?api_key=testKey&format=full&nutrients=203&nutrients=204&nutrients=205&nutrients=208"))
                 .andRespond(withSuccess(usdaGetResponse, MediaType.APPLICATION_JSON));
 
@@ -68,7 +68,7 @@ class FoodDataCentralUsdaApiGatewayTest {
     }
 
     @Test
-    public void search_withMockRestServer() {
+    void search_withMockRestServer() {
         restServer.expect(requestTo("http://localhost:4567/fdc/v1/foods/search?api_key=testKey"))
                 .andRespond(withSuccess(usdaSearchResponse, MediaType.APPLICATION_JSON));
 

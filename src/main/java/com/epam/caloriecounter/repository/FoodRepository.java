@@ -11,8 +11,6 @@ import java.util.List;
 public interface FoodRepository extends JpaRepository<Food, Long> {
     Food findByFdcId(Long fdcId);
 
-    //    @Query(value="SELECT Food.fdcId FROM Food WHERE Food.fdcId is not null")
-//    List<Long> getAllIds();
     @Query("select p.fdcId from #{#entityName} p")
     List<Long> getAllIds();
 }
