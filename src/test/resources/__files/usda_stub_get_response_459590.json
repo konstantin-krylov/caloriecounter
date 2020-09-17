@@ -1,0 +1,91 @@
+{
+  "fdcId": 459590,
+  "brandOwner": "Anderson Erickson Dairy Co.",
+  "dataSource": "LI",
+  "dataType": "Foundation",
+  "description": "GREEK YOGURT",
+  "foodClass": "Branded",
+  "gtinUpc": "071043009343",
+  "householdServingFullText": "1 CONTAINER",
+  "ingredients": "CULTURED GRADE A MILK AND NONFAT MILK, MILK PROTEIN CONCENTRATE, WHEY PROTEIN CONCENTRATE, SUGAR, MODIFIED CORN STARCH, COFFEE AND VANILLA FLAVORS, NATURAL FLAVORS, PECTIN, CITRIC ACID, SODIUM CITRATE, VITAMIN D3 ADDED; PROBIOTICS: STREPTOCOCCUS THERMOPHILUS, L BULGARICUS, L ACIDOPHILUS, BIFIDOBACTERIUM LACTIS, L CASEI.",
+  "servingSize": 170,
+  "servingSizeUnit": "g",
+  "brandedFoodCategory": "Yogurt",
+  "labelNutrients": {
+    "fat": {
+      "value": 2.992
+    },
+    "saturatedFat": {
+      "value": 1.496
+    },
+    "transFat": {
+      "value": 0
+    },
+    "cholesterol": {
+      "value": 15.3
+    },
+    "sodium": {
+      "value": 69.7
+    },
+    "carbohydrates": {
+      "value": 23.001
+    },
+    "fiber": {
+      "value": 0
+    },
+    "sugars": {
+      "value": 19.006
+    },
+    "protein": {
+      "value": 14.008
+    },
+    "calcium": {
+      "value": 149.6
+    },
+    "iron": {
+      "value": 0
+    },
+    "postassium": null,
+    "calories": {
+      "value": 170
+    }
+  },
+  "foodNutrients": [
+    {
+      "id": "3240673",
+      "type": "FoodNutrient",
+      "amount": 0,
+      "nutrient": {
+        "id": 1079,
+        "number": "291",
+        "name": "Fiber, total dietary",
+        "rank": 1200,
+        "unitName": "g"
+      }
+    },
+    {
+      "id": "3240675",
+      "type": "FoodNutrient",
+      "amount": 0,
+      "nutrient": {
+        "id": 1089,
+        "number": "303",
+        "name": "Iron, Fe",
+        "rank": 5400,
+        "unitName": "mg"
+      }
+    },
+    {
+      "id": "4729300",
+      "type": "FoodNutrient",
+      "amount": 11.18,
+      "nutrient": {
+        "id": 2000,
+        "number": "269",
+        "name": "Sugars, total including NLEA",
+        "rank": 1510,
+        "unitName": "g"
+      }
+    }
+  ]
+}
