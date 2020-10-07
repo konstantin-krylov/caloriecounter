@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.SortableField;
 import org.hibernate.search.annotations.TermVector;
 
 import javax.persistence.*;
@@ -25,6 +26,7 @@ public class Food {
     private Long foodId;
 
     @Field(termVector = TermVector.YES)
+    @SortableField
     @Column(name = "food_title")
     private String foodTitle;
 

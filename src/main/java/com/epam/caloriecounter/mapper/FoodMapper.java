@@ -2,6 +2,7 @@ package com.epam.caloriecounter.mapper;
 
 import com.epam.caloriecounter.dto.FoodDto;
 import com.epam.caloriecounter.dto.FoodNutrientDto;
+import com.epam.caloriecounter.dto.ShortFoodDto;
 import com.epam.caloriecounter.entity.Food;
 import com.epam.caloriecounter.entity.FoodNutrient;
 import org.mapstruct.Mapper;
@@ -16,4 +17,7 @@ public interface FoodMapper {
     @Mapping(target = "nutrientName", source = "nutrient.nutrientType.nutrientName")
     @Mapping(target = "unitName", source = "nutrient.nutrientType.unitName")
     FoodNutrientDto toFoodNutrientDto(FoodNutrient nutrient);
+
+    @Mapping(target = "foodTypeTitle", source = "food.foodType.foodTypeTitle")
+    ShortFoodDto toShortFoodDto(Food food);
 }

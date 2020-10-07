@@ -1,6 +1,8 @@
 package com.epam.caloriecounter.dao.impl;//package com.epam.caloriecounter.dao.impl;
 
 import com.epam.caloriecounter.entity.Food;
+import com.epam.caloriecounter.mapper.FoodMapper;
+import lombok.RequiredArgsConstructor;
 import org.apache.lucene.search.Query;
 import org.hibernate.search.engine.ProjectionConstants;
 import org.hibernate.search.jpa.FullTextEntityManager;
@@ -14,10 +16,13 @@ import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class FoodSearchDao {
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    private final FoodMapper foodMapper;
 
     public List<Object[]> searchProductNameByMoreLikeThisQuery(Food entity) {
 
@@ -42,7 +47,7 @@ public class FoodSearchDao {
                 .fuzzy()
                 .withEditDistanceUpTo(2)
                 .withPrefixLength(0)
-                .onField("foodTitle")
+                .onField("foodIngredients")
                 .matching(text)
                 .createQuery();
 

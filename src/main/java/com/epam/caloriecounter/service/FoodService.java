@@ -1,10 +1,12 @@
 package com.epam.caloriecounter.service;
 
+import com.epam.caloriecounter.dao.hibernatesearch.SearchRequest;
 import com.epam.caloriecounter.dao.impl.FoodSearchDao;
 import com.epam.caloriecounter.dto.FoodDto;
 import com.epam.caloriecounter.dto.FoodItemResponse;
 import com.epam.caloriecounter.dto.FoodNutrientDto;
 import com.epam.caloriecounter.dto.FoodNutrientResponse;
+import com.epam.caloriecounter.dto.ShortFoodDto;
 import com.epam.caloriecounter.entity.Food;
 import com.epam.caloriecounter.entity.FoodNutrient;
 import com.epam.caloriecounter.entity.FoodType;
@@ -18,6 +20,9 @@ import com.epam.caloriecounter.repository.FoodTypeRepository;
 import com.epam.caloriecounter.repository.NutrientTypeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -133,12 +138,22 @@ public class FoodService {
                 .setFoodNutrients(foodNutrientDtos);
     }
 
-    public List<FoodDto> searchFood(String text) {
-        List<Food> foods = foodSearchDao.searchFoodNameByFuzzyQuery(text);
-        List<FoodDto> foodDtos = new ArrayList<>();
+    public Page<ShortFoodDto> searchFood(SearchRequest request) {
+        List<Food> foods = foodSearchDao.searchFoodNameByFuzzyQuery(request.getSearchBar());
+        List<ShortFoodDto> foodDtos = new ArrayList<>();
         for (Food food : foods) {
-            foodDtos.add(foodMapper.toFoodDto(food));
+            foodDtos.add(foodMapper.toShortFoodDto(food));
         }
-        return foodDtos;
+
+        return getPageFromList(foodDtos, request, foodDtos.size());
+    }
+
+    private Page<ShortFoodDto> getPageFromList(List<ShortFoodDto> executionList, Pageable pageable, long maxSize) {
+        int toIndex = (pageable.getOffset() + pageable.getPageSize() > executionList.size()) ?
+                executionList.size() : (int) (pageable.getOffset() + pageable.getPageSize());
+        int fromIndex = toIndex > pageable.getOffset() ? (int) pageable.getOffset() : toIndex;
+        return new PageImpl<>(
+                executionList.subList(fromIndex, toIndex),
+                pageable, maxSize);
     }
 }
