@@ -1,6 +1,7 @@
 package com.epam.caloriecounter.controller;
 
 import com.epam.caloriecounter.dto.FoodDto;
+import com.epam.caloriecounter.entity.Food;
 import com.epam.caloriecounter.service.FoodService;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -22,5 +25,10 @@ public class FoodController {
     @PostMapping(path = "get-and-save", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<FoodDto> getFood(@RequestParam @ApiParam(example = "477320") String fdcId) {
         return ResponseEntity.ok(foodService.saveFood(fdcId));
+    }
+
+    @PostMapping(path = "search-food", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<FoodDto>> searchFood(@RequestParam String text) {
+        return ResponseEntity.ok(foodService.searchFood(text));
     }
 }

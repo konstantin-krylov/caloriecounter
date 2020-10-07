@@ -1,5 +1,6 @@
 package com.epam.caloriecounter.service;
 
+import com.epam.caloriecounter.dao.impl.FoodSearchDao;
 import com.epam.caloriecounter.dto.FoodDto;
 import com.epam.caloriecounter.dto.FoodItemResponse;
 import com.epam.caloriecounter.dto.FoodNutrientDto;
@@ -19,8 +20,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -38,6 +41,8 @@ public class FoodService {
     private final FoodRepository foodRepository;
     private final NutrientTypeRepository nutrientTypeRepository;
     private final FoodTypeRepository foodTypeRepository;
+
+    private final FoodSearchDao foodSearchDao;
 
     public FoodDto saveFood(String fdcId) {
         FoodItemResponse foodItemResponse = usdaApiGateway.getFood(fdcId, FOOD_DATA_FORMAT, Collections.emptyList());
@@ -126,5 +131,14 @@ public class FoodService {
         }
         return foodMapper.toFoodDto(savedFood)
                 .setFoodNutrients(foodNutrientDtos);
+    }
+
+    public List<FoodDto> searchFood(String text) {
+        List<Food> foods = foodSearchDao.searchFoodNameByFuzzyQuery(text);
+        List<FoodDto> foodDtos = new ArrayList<>();
+        for (Food food : foods) {
+            foodDtos.add(foodMapper.toFoodDto(food));
+        }
+        return foodDtos;
     }
 }
