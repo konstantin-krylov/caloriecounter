@@ -3,6 +3,7 @@ package com.epam.caloriecounter.controller;
 import com.epam.caloriecounter.dto.FoodDto;
 import com.epam.caloriecounter.dto.FoodNutrientDto;
 import com.epam.caloriecounter.service.FoodService;
+import com.epam.caloriecounter.service.SearchService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -24,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Test entToEnd.
  */
+
 @WebMvcTest(FoodController.class)
 class FoodControllerTest {
 
@@ -32,6 +34,9 @@ class FoodControllerTest {
 
     @MockBean
     private FoodService foodService;
+
+    @MockBean
+    private SearchService searchService;
 
     @Test
     void check_contextStarts() {

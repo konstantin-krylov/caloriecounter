@@ -22,8 +22,6 @@ public class FoodSearchDao {
     @PersistenceContext
     private EntityManager entityManager;
 
-    private final FoodMapper foodMapper;
-
     public List<Object[]> searchProductNameByMoreLikeThisQuery(Food entity) {
 
         Query moreLikeThisQuery = getQueryBuilder()
