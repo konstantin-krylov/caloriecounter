@@ -1,6 +1,7 @@
 package com.epam.caloriecounter.dao.hibernatesearch;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -14,6 +15,8 @@ import java.util.Map;
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = true)
+@JsonPropertyOrder({"searchBar", "pageSize", "pageNumber", "sort",
+        "offset", "paged", "unpaged", "filters"})
 public class SearchRequest extends PageRequest {
 
     private static final int DEFAULT_PAGE_SIZE = 10;

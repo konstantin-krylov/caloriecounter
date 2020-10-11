@@ -3,6 +3,8 @@ package com.epam.caloriecounter.entity;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,7 +16,7 @@ import javax.persistence.Table;
 
 import static javax.persistence.GenerationType.SEQUENCE;
 
-
+@Indexed
 @Setter
 @Getter
 @Entity
@@ -27,6 +29,7 @@ public class FoodType {
     @JoinColumn(name = "food_type_id")
     private Long foodTypeId;
 
+    @Field
     @Column(name = "food_type_title", unique = true)
     private String foodTypeTitle;
 }

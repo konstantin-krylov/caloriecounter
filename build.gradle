@@ -66,6 +66,9 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
+
+    // utils
+    implementation 'org.apache.commons:commons-lang3:3.5'
 }
 
 dependencyManagement {

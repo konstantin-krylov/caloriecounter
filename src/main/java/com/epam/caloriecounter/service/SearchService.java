@@ -25,7 +25,7 @@ public class SearchService {
     private final FoodMapper foodMapper;
 
     public Page<ShortFoodDto> searchFood(SearchRequest request) {
-        List<Food> foods = foodSearchDao.searchFoodNameByFuzzyQuery(request.getSearchBar());
+        List<Food> foods = foodSearchDao.search(request);
 
         List<ShortFoodDto> foodDtos = new ArrayList<>();
         for (Food food : foods) {
