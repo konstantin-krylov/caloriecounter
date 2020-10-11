@@ -1,10 +1,13 @@
 package com.epam.caloriecounter.dao.impl;//package com.epam.caloriecounter.dao.impl;
 
 import com.epam.caloriecounter.dao.hibernatesearch.SearchRequest;
+import com.epam.caloriecounter.dto.CustomSort;
 import com.epam.caloriecounter.entity.Food;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.SortField;
 import org.hibernate.search.engine.ProjectionConstants;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
@@ -18,6 +21,8 @@ import javax.persistence.PersistenceContext;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @Component
 @RequiredArgsConstructor
@@ -72,21 +77,32 @@ public class FoodSearchDao {
     }
 
     public List<Food> search(SearchRequest searchRequest) {
-        //TODO возможные критерии поиска для фильтров
-        // - Data Type (Foundation, Branded)
-        // - Ingredients (water, salt)
 
-        // кладем все слова для поиска вместе с фильтрами в мапу
         Map<String, List<Object>> filterParams = addSearchBarQueryToFilters(searchRequest);
 
-        //TODO пробегаем по мапе filterParams, если там searchBar, то разбить его на слова и создать query по нужным полям
-        FullTextQuery query = createFullTextQueryFromFilters(filterParams, getFullTextEntityManager(), getQueryBuilder());
+        FullTextQuery fullTextQuery = createFullTextQueryFromFilters(filterParams, getFullTextEntityManager(), getQueryBuilder());
+
+        fullTextQuery.setFirstResult(fullTextQuery.getFirstResult());
+        fullTextQuery.setMaxResults(fullTextQuery.getResultSize());
+        fullTextQuery.setSort(getLuceneSort(searchRequest.getSorting()));
 
         @SuppressWarnings("unchecked")
-        List<Food> resultList = (List<Food>) query.getResultList();
+        List<Food> resultList = (List<Food>) fullTextQuery.getResultList();
 
         return resultList;
 
+    }
+
+    private Sort getLuceneSort(CustomSort sort) {
+        SortField[] sortFields = new SortField[sort.getProperties().size()];
+        for (int i = 0; i < sort.getProperties().size(); i++) {
+            sortFields[i] = new SortField(
+                    sort.getProperties().get(i),
+                    SortField.Type.STRING, sort.getDirection().equals(DESC.toString())
+            );
+        }
+
+        return new Sort(sortFields);
     }
 
     private FullTextQuery createFullTextQueryFromFilters(Map<String, List<Object>> filterParams,
@@ -96,13 +112,11 @@ public class FoodSearchDao {
             return fullTextEntityManager.createFullTextQuery(queryBuilder.all().createQuery(), Food.class);
         }
 
-        // создали Query и дальше будем его настраивать
         BooleanJunction<?> query = queryBuilder.bool();
 
         for (Map.Entry<String, List<Object>> entry : filterParams.entrySet()) {
 
             if (StringUtils.isNotBlank(entry.getKey()) || entry.getValue() != null) {
-                // TODO создать Query и потом применить к нему фильтры, если они есть
                 Query customQuery = processCustomFilter(entry, queryBuilder);
                 if (customQuery != null) {
                     query.must(customQuery);
@@ -121,11 +135,15 @@ public class FoodSearchDao {
             BooleanJunction<?> query = queryBuilder.bool();
 
             for (String singleWord : splittedSearchString) {
-                query.must(queryBuilder.keyword().wildcard()
-                        .onField(FOOD_TITLE_FIELD_NAME).boostedTo(HIGH_PRIORITY)
-                        .andField(FOOD_INGREDIENTS_FIELD_NAME).boostedTo(MEDIUM_PRIORITY)
-                        .matching(getSearchValue(singleWord))
-                        .createQuery());
+                query.must(
+                        queryBuilder
+                                .keyword()
+                                .wildcard()
+                                .onField(FOOD_TITLE_FIELD_NAME).boostedTo(HIGH_PRIORITY)
+                                .andField(FOOD_INGREDIENTS_FIELD_NAME).boostedTo(MEDIUM_PRIORITY)
+                                .matching(getSearchValue(singleWord))
+                                .createQuery()
+                );
             }
 
             return query.createQuery();
@@ -143,10 +161,14 @@ public class FoodSearchDao {
                 BooleanJunction<?> subQuery = queryBuilder.bool();
 
                 for (String namePart : foodTypeTitleParts) {
-                    subQuery.must(queryBuilder.keyword().wildcard()
-                            .onField(FOOD_INGREDIENTS_FIELD_NAME)
-                            .matching(getSearchValue(namePart))
-                            .createQuery());
+                    subQuery.must(
+                            queryBuilder
+                                    .keyword()
+                                    .wildcard()
+                                    .onField(FOOD_INGREDIENTS_FIELD_NAME)
+                                    .matching(getSearchValue(namePart))
+                                    .createQuery()
+                    );
                 }
 
                 query.should(subQuery.createQuery());
@@ -160,7 +182,10 @@ public class FoodSearchDao {
 
     private String[] parseSearchBarString(Map.Entry<String, List<Object>> entry) {
         String searchString = (String) entry.getValue().get(0);
-        return searchString.trim().split(" ");
+        return searchString
+                .trim()
+                .replaceAll("(^\\s+|\\s+$)", "")
+                .split("\\s+");
     }
 
     protected String getSearchValue(String elm) {
