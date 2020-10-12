@@ -1,4 +1,4 @@
-package com.epam.caloriecounter.dao.impl;//package com.epam.caloriecounter.dao.impl;
+package com.epam.caloriecounter.dao.impl;
 
 import com.epam.caloriecounter.dao.hibernatesearch.SearchRequest;
 import com.epam.caloriecounter.dto.CustomSort;
@@ -8,7 +8,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
-import org.hibernate.search.engine.ProjectionConstants;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.hibernate.search.jpa.Search;
@@ -29,62 +28,26 @@ import static org.springframework.data.domain.Sort.Direction.DESC;
 public class FoodSearchDao {
 
     private static final String SEARCH_BAR_REQUEST = "searchBar";
-    private static final String DATA_TYPE_FILTER = "dataType";
     private static final String INGREDIENTS_FILTER = "ingredients";
 
     private static final String FOOD_TITLE_FIELD_NAME = "foodTitle";
     public static final String FOOD_INGREDIENTS_FIELD_NAME = "foodIngredients";
-    public static final String FOOD_TYPE_TITLE_FIELD_NAME = "foodTypeTitle";
 
     private static final float HIGH_PRIORITY = 5F;
     private static final float MEDIUM_PRIORITY = 3F;
-    private static final float LOW_PRIORITY = 1F;
 
     @PersistenceContext
     private EntityManager entityManager;
-
-    public List<Object[]> searchProductNameByMoreLikeThisQuery(Food entity) {
-
-        Query moreLikeThisQuery = getQueryBuilder()
-                .moreLikeThis()
-                .comparingField("foodTitle")
-                .toEntity(entity)
-                .createQuery();
-
-        @SuppressWarnings("unchecked")
-        List<Object[]> results = getJpaQuery(moreLikeThisQuery)
-                .setProjection(ProjectionConstants.THIS, ProjectionConstants.SCORE)
-                .getResultList();
-
-        return results;
-    }
-
-    public List<Food> searchFoodNameByFuzzyQuery(String text) {
-
-        Query fuzzyQuery = getQueryBuilder()
-                .keyword()
-                .fuzzy()
-                .withEditDistanceUpTo(2)
-                .withPrefixLength(0)
-                .onField(FOOD_INGREDIENTS_FIELD_NAME)
-                .matching(text)
-                .createQuery();
-
-        @SuppressWarnings("unchecked")
-        List<Food> resultList = (List<Food>) getJpaQuery(fuzzyQuery).getResultList();
-
-        return resultList;
-    }
 
     public List<Food> search(SearchRequest searchRequest) {
 
         Map<String, List<Object>> filterParams = addSearchBarQueryToFilters(searchRequest);
 
-        FullTextQuery fullTextQuery = createFullTextQueryFromFilters(filterParams, getFullTextEntityManager(), getQueryBuilder());
-
-        fullTextQuery.setFirstResult(fullTextQuery.getFirstResult());
-        fullTextQuery.setMaxResults(fullTextQuery.getResultSize());
-        fullTextQuery.setSort(getLuceneSort(searchRequest.getSorting()));
+        FullTextQuery fullTextQuery = createFullTextQueryFromFilters(
+                filterParams,
+                getFullTextEntityManager(),
+                getQueryBuilder()
+        );
 
         @SuppressWarnings("unchecked")
         List<Food> resultList = (List<Food>) fullTextQuery.getResultList();
@@ -93,16 +56,19 @@ public class FoodSearchDao {
 
     }
 
-    private Sort getLuceneSort(CustomSort sort) {
-        SortField[] sortFields = new SortField[sort.getProperties().size()];
-        for (int i = 0; i < sort.getProperties().size(); i++) {
-            sortFields[i] = new SortField(
-                    sort.getProperties().get(i),
-                    SortField.Type.STRING, sort.getDirection().equals(DESC.toString())
-            );
-        }
+    private Map<String, List<Object>> addSearchBarQueryToFilters(SearchRequest searchRequest) {
 
-        return new Sort(sortFields);
+        String searchBarQuery = searchRequest.getSearchBar();
+
+        if (StringUtils.isNotBlank(searchBarQuery)) {
+
+            Map<String, List<Object>> filters = searchRequest.getFilters();
+            filters.put(SEARCH_BAR_REQUEST, Collections.singletonList(searchBarQuery));
+            return filters;
+
+        } else {
+            return searchRequest.getFilters();
+        }
     }
 
     private FullTextQuery createFullTextQueryFromFilters(Map<String, List<Object>> filterParams,
@@ -116,10 +82,12 @@ public class FoodSearchDao {
 
         for (Map.Entry<String, List<Object>> entry : filterParams.entrySet()) {
 
-            if (StringUtils.isNotBlank(entry.getKey()) || entry.getValue() != null) {
+            if (StringUtils.isNotBlank(entry.getKey()) && entry.getValue() != null) {
                 Query customQuery = processCustomFilter(entry, queryBuilder);
                 if (customQuery != null) {
                     query.must(customQuery);
+                } else {
+                    query.should(queryBuilder.all().createQuery());
                 }
             } else {
                 throw new UnsupportedOperationException();
@@ -130,7 +98,13 @@ public class FoodSearchDao {
 
     private Query processCustomFilter(Map.Entry<String, List<Object>> entry, QueryBuilder queryBuilder) {
         if (entry.getKey().equals(SEARCH_BAR_REQUEST)) {
-            String[] splittedSearchString = parseSearchBarString(entry);
+            String searchString = (String) entry.getValue().get(0);
+
+            if (searchString == null || searchString.isBlank()) {
+                return null;
+            }
+
+            String[] splittedSearchString = parseSearchBarString(searchString);
 
             BooleanJunction<?> query = queryBuilder.bool();
 
@@ -150,17 +124,21 @@ public class FoodSearchDao {
         }
 
         if (entry.getKey().equals(INGREDIENTS_FILTER)) {
-            List<Object> foodTypeTitles = entry.getValue();
+            List<Object> searchIngredients = entry.getValue();
+
+            if (searchIngredients == null || searchIngredients.isEmpty()) {
+                return null;
+            }
 
             BooleanJunction<?> query = queryBuilder.bool();
 
-            for (Object foodTypeTitle : foodTypeTitles) {
+            for (Object searshIngredient : searchIngredients) {
 
-                String[] foodTypeTitleParts = foodTypeTitle.toString().trim().split(" ");
+                String[] searshIngredientParts = parseSearchBarString(searshIngredient.toString());
 
                 BooleanJunction<?> subQuery = queryBuilder.bool();
 
-                for (String namePart : foodTypeTitleParts) {
+                for (String namePart : searshIngredientParts) {
                     subQuery.must(
                             queryBuilder
                                     .keyword()
@@ -180,31 +158,15 @@ public class FoodSearchDao {
         return null;
     }
 
-    private String[] parseSearchBarString(Map.Entry<String, List<Object>> entry) {
-        String searchString = (String) entry.getValue().get(0);
+    private String[] parseSearchBarString(String searchString) {
         return searchString
                 .trim()
                 .replaceAll("(^\\s+|\\s+$)", "")
                 .split("\\s+");
     }
 
-    protected String getSearchValue(String elm) {
+    private String getSearchValue(String elm) {
         return elm.toLowerCase() + "*";
-    }
-
-    protected Map<String, List<Object>> addSearchBarQueryToFilters(SearchRequest searchRequest) {
-
-        String searchBarQuery = searchRequest.getSearchBar();
-
-        if (StringUtils.isNotBlank(searchBarQuery)) {
-
-            Map<String, List<Object>> filters = searchRequest.getFilters();
-            filters.put(SEARCH_BAR_REQUEST, Collections.singletonList(searchBarQuery));
-            return filters;
-
-        } else {
-            return searchRequest.getFilters();
-        }
     }
 
     private QueryBuilder getQueryBuilder() {
@@ -214,12 +176,6 @@ public class FoodSearchDao {
                 .buildQueryBuilder()
                 .forEntity(Food.class)
                 .get();
-    }
-
-    private FullTextQuery getJpaQuery(Query luceneQuery) {
-
-        return getFullTextEntityManager()
-                .createFullTextQuery(luceneQuery, Food.class);
     }
 
     private FullTextEntityManager getFullTextEntityManager() {

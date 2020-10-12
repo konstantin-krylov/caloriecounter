@@ -29,7 +29,6 @@ public class FoodType {
     @JoinColumn(name = "food_type_id")
     private Long foodTypeId;
 
-    @Field
     @Column(name = "food_type_title", unique = true)
     private String foodTypeTitle;
 }

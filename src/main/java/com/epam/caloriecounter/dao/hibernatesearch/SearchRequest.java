@@ -15,7 +15,7 @@ import java.util.Map;
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = true)
-@JsonPropertyOrder({"searchBar", "pageSize", "pageNumber", "sort",
+@JsonPropertyOrder({"searchBar", "pageSize", "pageNumber",
         "offset", "paged", "unpaged", "filters"})
 public class SearchRequest extends PageRequest {
 
@@ -27,23 +27,14 @@ public class SearchRequest extends PageRequest {
 
     public SearchRequest(@JsonProperty("pageNumber") int pageNumber,
                          @JsonProperty("pageSize") int pageSize,
-                         @JsonProperty("sort") CustomSort sorting,
                          @JsonProperty("filters") Map<String, List<Object>> filters,
                          @JsonProperty("searchBar") String searchBar) {
-        super(pageNumber, initPageSize(pageSize), initSpringSort(sorting));
+        super(pageNumber, initPageSize(pageSize), Sort.unsorted());
         this.filters = filters;
         this.searchBar = searchBar;
-        this.sorting = sorting;
     }
 
     private static int initPageSize(int pageSize) {
         return pageSize < 1 ? DEFAULT_PAGE_SIZE : pageSize;
-    }
-
-    private static Sort initSpringSort(CustomSort customSort) {
-        String[] propertiesArray = new String[customSort.getProperties().size()];
-        propertiesArray = customSort.getProperties().toArray(propertiesArray);
-
-        return Sort.by(Sort.Direction.valueOf(customSort.getDirection()), propertiesArray);
     }
 }

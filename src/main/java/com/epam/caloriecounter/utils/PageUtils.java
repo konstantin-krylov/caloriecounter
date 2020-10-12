@@ -15,7 +15,8 @@ public class PageUtils {
         int fromIndex = toIndex > pageable.getOffset() ? (int) pageable.getOffset() : toIndex;
         return new PageImpl<>(
                 executionList.subList(fromIndex, toIndex),
-                pageable, maxSize);
+                pageable, maxSize
+        );
     }
 
 }
