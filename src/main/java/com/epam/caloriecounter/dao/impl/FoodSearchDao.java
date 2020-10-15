@@ -1,29 +1,30 @@
 package com.epam.caloriecounter.dao.impl;
 
 import com.epam.caloriecounter.dao.hibernatesearch.SearchRequest;
-import com.epam.caloriecounter.dto.CustomSort;
+import com.epam.caloriecounter.dto.ShortFoodDto;
 import com.epam.caloriecounter.entity.Food;
+import com.epam.caloriecounter.mapper.FoodMapper;
+import com.epam.caloriecounter.utils.PageUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.Sort;
-import org.apache.lucene.search.SortField;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.hibernate.search.jpa.Search;
 import org.hibernate.search.query.dsl.BooleanJunction;
 import org.hibernate.search.query.dsl.QueryBuilder;
-import org.springframework.stereotype.Component;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static org.springframework.data.domain.Sort.Direction.DESC;
-
-@Component
+@Repository
 @RequiredArgsConstructor
 public class FoodSearchDao {
 
@@ -39,7 +40,10 @@ public class FoodSearchDao {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public List<Food> search(SearchRequest searchRequest) {
+    private final FoodMapper foodMapper;
+
+    @Transactional(readOnly = true)
+    public Page<ShortFoodDto> search(SearchRequest searchRequest) {
 
         Map<String, List<Object>> filterParams = addSearchBarQueryToFilters(searchRequest);
 
@@ -52,8 +56,12 @@ public class FoodSearchDao {
         @SuppressWarnings("unchecked")
         List<Food> resultList = (List<Food>) fullTextQuery.getResultList();
 
-        return resultList;
+        List<ShortFoodDto> foodDtos = new ArrayList<>();
+        for (Food food : resultList) {
+            foodDtos.add(foodMapper.toShortFoodDto(food));
+        }
 
+        return PageUtils.getPageFromList(foodDtos, searchRequest, foodDtos.size());
     }
 
     private Map<String, List<Object>> addSearchBarQueryToFilters(SearchRequest searchRequest) {
@@ -158,9 +166,10 @@ public class FoodSearchDao {
         return null;
     }
 
-    private String[] parseSearchBarString(String searchString) {
+    protected String[] parseSearchBarString(String searchString) {
         return searchString
                 .trim()
+                .replaceAll("[^a-zA-Z0-9\\s]", "")
                 .replaceAll("(^\\s+|\\s+$)", "")
                 .split("\\s+");
     }

@@ -1,6 +1,5 @@
 package com.epam.caloriecounter.dao.hibernatesearch;
 
-import com.epam.caloriecounter.dto.CustomSort;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.EqualsAndHashCode;
@@ -23,7 +22,6 @@ public class SearchRequest extends PageRequest {
 
     private transient Map<String, List<Object>> filters;
     private String searchBar;
-    private CustomSort sorting;
 
     public SearchRequest(@JsonProperty("pageNumber") int pageNumber,
                          @JsonProperty("pageSize") int pageSize,
