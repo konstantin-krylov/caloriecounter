@@ -21,6 +21,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -71,6 +72,9 @@ public class FoodSearchDao {
         if (StringUtils.isNotBlank(searchBarQuery)) {
 
             Map<String, List<Object>> filters = searchRequest.getFilters();
+            if (filters == null) {
+                filters = new HashMap<>();
+            }
             filters.put(SEARCH_BAR_REQUEST, Collections.singletonList(searchBarQuery));
             return filters;
 
@@ -108,10 +112,6 @@ public class FoodSearchDao {
         if (entry.getKey().equals(SEARCH_BAR_REQUEST)) {
             String searchString = (String) entry.getValue().get(0);
 
-            if (searchString == null || searchString.isBlank()) {
-                return null;
-            }
-
             String[] splittedSearchString = parseSearchBarString(searchString);
 
             BooleanJunction<?> query = queryBuilder.bool();
@@ -134,14 +134,13 @@ public class FoodSearchDao {
         if (entry.getKey().equals(INGREDIENTS_FILTER)) {
             List<Object> searchIngredients = entry.getValue();
 
-            if (searchIngredients == null || searchIngredients.isEmpty()) {
-                return null;
-            }
-
             BooleanJunction<?> query = queryBuilder.bool();
 
             for (Object searshIngredient : searchIngredients) {
-
+                if (searshIngredient == null || searshIngredient.toString().isBlank()) {
+                    query.should(queryBuilder.all().createQuery());
+                    continue;
+                }
                 String[] searshIngredientParts = parseSearchBarString(searshIngredient.toString());
 
                 BooleanJunction<?> subQuery = queryBuilder.bool();

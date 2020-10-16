@@ -1,5 +1,6 @@
 package com.epam.caloriecounter.configuration;
 
+import com.epam.caloriecounter.exception.IndexingProcessException;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +28,7 @@ public class HibernateSearchConfiguration {
             fullTextEntityManager.createIndexer().startAndWait();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw new RuntimeException(e);
+            throw new IndexingProcessException();
         }
-
     }
 }

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -23,7 +24,7 @@ public class NutrientService {
     private final NutrientTypeRepository nutrientTypeRepository;
     private final NutrientTypeProperties nutrientTypeProperties;
 
-    public HashSet<FoodNutrient> getFoodNutrients(FoodItemResponse foodItemResponse, Food food) {
+    public Set<FoodNutrient> getFoodNutrients(FoodItemResponse foodItemResponse, Food food) {
 
         HashSet<FoodNutrient> foodNutrients = new HashSet<>();
         for (FoodNutrientResponse response : foodItemResponse.getFoodNutrients()) {

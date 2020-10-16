@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Testcontainers
@@ -50,6 +51,8 @@ class FoodSearchDaoTest {
 
     @Autowired
     private FoodSearchDao foodSearchDao;
+
+    public static final String DIFFICULT_SEARCH_BAR = "  MILK,  CREAM,   SKIM MILK:,    (SUGAR}, BUTTERMILK, WHEY.  ";
 
     @Test
     void check_contextStarts() {
@@ -101,15 +104,71 @@ class FoodSearchDaoTest {
 
     @Test
     void search_shouldReturnPageOfFoodBySearchBarRequest() {
+        SearchRequest searchRequest = new SearchRequest(0, 25, null, DIFFICULT_SEARCH_BAR);
+        Page<ShortFoodDto> responseList = foodSearchDao.search(searchRequest);
 
+        MatcherAssert.assertThat(responseList.getNumberOfElements(), is(1));
+        MatcherAssert.assertThat(responseList.getTotalElements(), is(1L));
+        MatcherAssert.assertThat(responseList.getTotalPages(), is(1));
+        MatcherAssert.assertThat(responseList.getContent().get(0).getFoodTitle(), is("COFFEE ICE CREAM, MOCHA ME HOPPY"));
+    }
+
+    @Test
+    void search_shouldReturnPageAllFoodByRequestWithoutAnyFilterOrSearchBarString() {
+        SearchRequest searchRequest = new SearchRequest(0, 25, null, null);
+        Page<ShortFoodDto> responseList = foodSearchDao.search(searchRequest);
+
+        MatcherAssert.assertThat(responseList.getNumberOfElements(), is(25));
+        MatcherAssert.assertThat(responseList.getTotalElements(), is(301L));
+        MatcherAssert.assertThat(responseList.getTotalPages(), is(13));
+    }
+
+    @Test
+    void search_shouldReturnPageAllFoodByRequestWithEmptyAndNullFilter() {
+        Map<String, List<Object>> query = new HashMap<>();
+        List<Object> ingredients = new ArrayList<>();
+        ingredients.add("");
+        ingredients.add(null);
+        query.put("ingredients", ingredients);
+
+        SearchRequest searchRequest = new SearchRequest(0, 25, query, null);
+        Page<ShortFoodDto> responseList = foodSearchDao.search(searchRequest);
+
+        MatcherAssert.assertThat(responseList.getNumberOfElements(), is(25));
+        MatcherAssert.assertThat(responseList.getTotalElements(), is(301L));
+        MatcherAssert.assertThat(responseList.getTotalPages(), is(13));
+    }
+
+    @Test
+    void search_shouldReturnPageAllFoodByRequestWithNonExistingFilter() {
+        Map<String, List<Object>> query = new HashMap<>();
+        List<Object> ingredients = new ArrayList<>();
+        ingredients.add("somethong");
+        query.put("notExistingFilterName", ingredients);
+
+        SearchRequest searchRequest = new SearchRequest(0, 0, query, null);
+        Page<ShortFoodDto> responseList = foodSearchDao.search(searchRequest);
+
+        MatcherAssert.assertThat(responseList.getNumberOfElements(), is(10));
+        MatcherAssert.assertThat(responseList.getTotalElements(), is(301L));
+        MatcherAssert.assertThat(responseList.getTotalPages(), is(31));
+    }
+
+    @Test
+    void search_shouldReturnPageAllFoodByRequestWithEmptySearchBarString() {
+        SearchRequest searchRequest = new SearchRequest(0, 0, null, "");
+        Page<ShortFoodDto> responseList = foodSearchDao.search(searchRequest);
+
+        MatcherAssert.assertThat(responseList.getNumberOfElements(), is(10));
+        MatcherAssert.assertThat(responseList.getTotalElements(), is(301L));
+        MatcherAssert.assertThat(responseList.getTotalPages(), is(31));
     }
 
     @Test
     void parseSearchBarString_shouldReplaceAllNonWordCharacters() {
-        String searchBar = "  MILK,  CREAM,   SKIM MILK:,    (SUGAR}, BUTTERMILK, WHEY.  ";
-        String[] actualFoodArray = foodSearchDao.parseSearchBarString(searchBar);
+        String[] actualFoodArray = foodSearchDao.parseSearchBarString(DIFFICULT_SEARCH_BAR);
         String[] expectedFoodArray = {"MILK", "CREAM", "SKIM", "MILK", "SUGAR", "BUTTERMILK", "WHEY"};
-        assertThat(expectedFoodArray == actualFoodArray);
+        assertArrayEquals(expectedFoodArray, actualFoodArray);
     }
 
 }

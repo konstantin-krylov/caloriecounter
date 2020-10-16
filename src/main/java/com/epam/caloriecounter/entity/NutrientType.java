@@ -1,6 +1,5 @@
 package com.epam.caloriecounter.entity;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,7 +12,6 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import static javax.persistence.GenerationType.SEQUENCE;
-
 
 @Setter
 @Getter

@@ -6,7 +6,7 @@ import com.epam.caloriecounter.dto.FoodNutrientDto;
 import com.epam.caloriecounter.entity.Food;
 import com.epam.caloriecounter.entity.FoodNutrient;
 import com.epam.caloriecounter.entity.FoodType;
-import com.epam.caloriecounter.exception.FoodAlreadyExistException;
+import com.epam.caloriecounter.exception.FoodException;
 import com.epam.caloriecounter.gateway.UsdaApiGateway;
 import com.epam.caloriecounter.mapper.FoodMapper;
 import com.epam.caloriecounter.repository.FoodRepository;
@@ -51,7 +51,7 @@ public class FoodService {
 
     private void checkOnFoodDublicate(Long fdcId) {
         if (!Objects.isNull(foodRepository.findByFdcId(fdcId))) {
-            throw new FoodAlreadyExistException(fdcId);
+            throw new FoodException(fdcId);
         }
     }
 

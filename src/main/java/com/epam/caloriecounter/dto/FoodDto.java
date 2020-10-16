@@ -1,12 +1,10 @@
 package com.epam.caloriecounter.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Set;
-
 
 @Setter
 @Getter

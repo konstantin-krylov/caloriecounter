@@ -1,12 +1,15 @@
 package com.epam.caloriecounter.utils;
 
 import com.epam.caloriecounter.dto.ShortFoodDto;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PageUtils {
 
     public static Page<ShortFoodDto> getPageFromList(List<ShortFoodDto> executionList, Pageable pageable, long maxSize) {
