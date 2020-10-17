@@ -3,13 +3,15 @@ package com.epam.caloriecounter.utils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+@SpringBootTest(properties = "spring.main.lazy-initialization=true")
 class RandomValueGeneratorTest {
 
     @Autowired
     private RandomValueGenerator randomValueGenerator;
+
     public static final int MAX_FDC_ID = 999999;
     public static final int MIN_FDC_ID = 100000;
 
