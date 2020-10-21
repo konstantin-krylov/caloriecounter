@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Testcontainers
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class FoodRepositoryTestContainers {
+class FoodRepositoryTest {
     @Container
     public static final PostgreSQLContainer<?> DATABASE_CONTAINER = new PostgreSQLContainer<>();
 

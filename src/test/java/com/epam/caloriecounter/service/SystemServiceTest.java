@@ -50,7 +50,7 @@ import static org.mockito.Mockito.when;
         "usda.service.url=http://localhost:4567/fdc/v1",
         "usda.service.key=testKey"
 })
-class SystemServiceTestContainers {
+class SystemServiceTest {
     @Container
     public static final PostgreSQLContainer<?> DATABASE_CONTAINER = new PostgreSQLContainer<>();
 

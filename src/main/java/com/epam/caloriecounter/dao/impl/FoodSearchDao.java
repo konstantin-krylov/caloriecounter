@@ -55,7 +55,7 @@ public class FoodSearchDao {
         );
 
         @SuppressWarnings("unchecked")
-        List<Food> resultList = (List<Food>) fullTextQuery.getResultList();
+        List<Food> resultList = fullTextQuery.getResultList();
 
         List<ShortFoodDto> foodDtos = new ArrayList<>();
         for (Food food : resultList) {
@@ -96,11 +96,13 @@ public class FoodSearchDao {
 
             if (StringUtils.isNotBlank(entry.getKey()) && entry.getValue() != null) {
                 Query customQuery = processCustomFilter(entry, queryBuilder);
+
                 if (customQuery != null) {
                     query.must(customQuery);
                 } else {
                     query.should(queryBuilder.all().createQuery());
                 }
+
             } else {
                 throw new UnsupportedOperationException();
             }
@@ -109,68 +111,75 @@ public class FoodSearchDao {
     }
 
     private Query processCustomFilter(Map.Entry<String, List<Object>> entry, QueryBuilder queryBuilder) {
+
         if (entry.getKey().equals(SEARCH_BAR_REQUEST)) {
-            String searchString = (String) entry.getValue().get(0);
+            return processSearchRequest(entry, queryBuilder);
+        } else if (entry.getKey().equals(INGREDIENTS_FILTER)) {
+            return processIngredientsFilter(entry, queryBuilder);
+        } else {
+            return null;
+        }
+    }
 
-            String[] splittedSearchString = parseSearchBarString(searchString);
+    private Query processSearchRequest(Map.Entry<String, List<Object>> entry, QueryBuilder queryBuilder) {
+        String searchString = (String) entry.getValue().get(0);
+        String[] splittedSearchString = parseSearchBarString(searchString);
 
-            BooleanJunction<?> query = queryBuilder.bool();
+        BooleanJunction<?> query = queryBuilder.bool();
 
-            for (String singleWord : splittedSearchString) {
-                query.must(
+        for (String singleWord : splittedSearchString) {
+            query.must(
+                    queryBuilder
+                            .keyword()
+                            .wildcard()
+                            .onField(FOOD_TITLE_FIELD_NAME).boostedTo(HIGH_PRIORITY)
+                            .andField(FOOD_INGREDIENTS_FIELD_NAME).boostedTo(MEDIUM_PRIORITY)
+                            .matching(getSearchValue(singleWord))
+                            .createQuery()
+            );
+        }
+        return query.createQuery();
+    }
+
+    private Query processIngredientsFilter(Map.Entry<String, List<Object>> entry, QueryBuilder queryBuilder) {
+        List<Object> searchIngredients = entry.getValue();
+
+        BooleanJunction<?> query = queryBuilder.bool();
+
+        for (Object searshIngredient : searchIngredients) {
+
+            if (searshIngredient == null || searshIngredient.toString().isBlank()) {
+                query.should(queryBuilder.all().createQuery());
+                continue;
+            }
+
+            String[] searshIngredientParts = parseSearchBarString(searshIngredient.toString());
+
+            BooleanJunction<?> subQuery = queryBuilder.bool();
+
+            for (String namePart : searshIngredientParts) {
+                subQuery.must(
                         queryBuilder
                                 .keyword()
                                 .wildcard()
-                                .onField(FOOD_TITLE_FIELD_NAME).boostedTo(HIGH_PRIORITY)
-                                .andField(FOOD_INGREDIENTS_FIELD_NAME).boostedTo(MEDIUM_PRIORITY)
-                                .matching(getSearchValue(singleWord))
+                                .onField(FOOD_INGREDIENTS_FIELD_NAME)
+                                .matching(getSearchValue(namePart))
                                 .createQuery()
                 );
             }
 
-            return query.createQuery();
+            query.should(subQuery.createQuery());
         }
 
-        if (entry.getKey().equals(INGREDIENTS_FILTER)) {
-            List<Object> searchIngredients = entry.getValue();
-
-            BooleanJunction<?> query = queryBuilder.bool();
-
-            for (Object searshIngredient : searchIngredients) {
-                if (searshIngredient == null || searshIngredient.toString().isBlank()) {
-                    query.should(queryBuilder.all().createQuery());
-                    continue;
-                }
-                String[] searshIngredientParts = parseSearchBarString(searshIngredient.toString());
-
-                BooleanJunction<?> subQuery = queryBuilder.bool();
-
-                for (String namePart : searshIngredientParts) {
-                    subQuery.must(
-                            queryBuilder
-                                    .keyword()
-                                    .wildcard()
-                                    .onField(FOOD_INGREDIENTS_FIELD_NAME)
-                                    .matching(getSearchValue(namePart))
-                                    .createQuery()
-                    );
-                }
-
-                query.should(subQuery.createQuery());
-            }
-
-            return query.createQuery();
-        }
-
-        return null;
+        return query.createQuery();
     }
 
     protected String[] parseSearchBarString(String searchString) {
         return searchString
                 .trim()
                 .replaceAll("[^a-zA-Z0-9\\s]", "")
-                .replaceAll("(^\\s+|\\s+$)", "")
-                .split("\\s+");
+                .replaceAll(" +", " ")
+                .split(" ");
     }
 
     private String getSearchValue(String elm) {

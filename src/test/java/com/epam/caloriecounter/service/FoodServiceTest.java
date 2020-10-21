@@ -43,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
         "usda.service.url=http://localhost:4567/fdc/v1",
         "usda.service.key=testKey"
 })
-class FoodServiceTestContainers {
+class FoodServiceTest {
     @Container
     public static final PostgreSQLContainer<?> DATABASE_CONTAINER = new PostgreSQLContainer<>();
 
