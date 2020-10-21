@@ -1,15 +1,18 @@
 package com.epam.caloriecounter.entity;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.SortableField;
+import org.hibernate.search.annotations.TermVector;
 
 import javax.persistence.*;
 import java.util.Set;
 
 import static javax.persistence.GenerationType.SEQUENCE;
 
-
+@Indexed
 @Setter
 @Getter
 @Entity
@@ -22,6 +25,8 @@ public class Food {
     @Column(name = "food_id")
     private Long foodId;
 
+    @Field(termVector = TermVector.YES)
+    @SortableField
     @Column(name = "food_title")
     private String foodTitle;
 
@@ -31,6 +36,7 @@ public class Food {
     @Column(name = "food_description")
     private String foodDescription;
 
+    @Field
     @Column(name = "food_ingredients", length = 2000)
     private String foodIngredients;
 

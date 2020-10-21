@@ -1,9 +1,7 @@
 package com.epam.caloriecounter.dto;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-
 
 @Setter
 @Getter

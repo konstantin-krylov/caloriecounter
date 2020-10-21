@@ -1,6 +1,5 @@
 package com.epam.caloriecounter.entity;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,12 +17,11 @@ import javax.persistence.Table;
 
 import static javax.persistence.GenerationType.SEQUENCE;
 
-
 @Setter
 @Getter
 @Entity
 @Table(name = "food_nutrient")
-@EqualsAndHashCode(exclude={"food"})
+@EqualsAndHashCode(exclude = {"food"})
 public class FoodNutrient {
 
     @Id

@@ -1,10 +1,10 @@
 package com.epam.caloriecounter.exception;
 
-public class FoodAlreadyExistException extends AbstractAlreadyExistException {
+public class FoodException extends AbstractException {
 
     private static final String MESSAGE = "Food with fdc_id %s already exists";
 
-    public FoodAlreadyExistException(Long fdcId) {
+    public FoodException(Long fdcId) {
         super(String.format(MESSAGE, fdcId));
     }
 }

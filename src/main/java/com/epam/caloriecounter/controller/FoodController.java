@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/")
 public class FoodController {
+
     private final FoodService foodService;
 
     @PostMapping(path = "get-and-save", produces = MediaType.APPLICATION_JSON_VALUE)

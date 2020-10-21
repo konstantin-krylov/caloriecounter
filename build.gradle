@@ -29,17 +29,20 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    // to take properties from application.yml
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 //    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 //    implementation 'org.springframework.boot:spring-boot-starter-security'
 
     // swagger
-    compile 'io.springfox:springfox-swagger2:2.9.2'
-    compile 'io.springfox:springfox-swagger-ui:2.9.2'
-    compile 'javax.validation:validation-api:2.0.1.Final'
+    implementation 'io.springfox:springfox-swagger2:2.9.2'
+    implementation 'io.springfox:springfox-swagger-ui:2.9.2'
+    implementation 'javax.validation:validation-api:2.0.1.Final'
 
-    compile('org.flywaydb:flyway-core')
+    //db
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.hibernate:hibernate-search-orm:5.11.5.Final'
     runtimeOnly 'org.postgresql:postgresql'
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
     // tests
     testImplementation 'org.springframework.security:spring-security-test'
@@ -63,6 +66,9 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
+
+    // utils
+    implementation 'org.apache.commons:commons-lang3:3.5'
 }
 
 dependencyManagement {
